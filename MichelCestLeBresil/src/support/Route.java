@@ -1,7 +1,9 @@
-package utils;
+package support;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import support.City;
+
 
 public class Route {
 	private ArrayList<City> cities = new ArrayList<City>();
@@ -11,18 +13,20 @@ public class Route {
 	}
 
 	//constructeurs
-	//-->à partir d'une autre route
+	//-->ï¿½ partir d'une autre route
 	public Route(Route route) {
 		/*
 		 * ajouter les villes de la route en param comme villes de cette route
 		 */
-		//à compléter
+		//ï¿½ complï¿½ter
+		
+		
 	}
 
-	//-->à partir d'une liste de villes qu'on mélange pour ne pas garder le même ordre
+	//-->ï¿½ partir d'une liste de villes qu'on mï¿½lange pour ne pas garder le mï¿½me ordre
 	public Route(ArrayList<City> cities) {
 		this.cities.addAll(cities);
-		//mélanger aléatoirement les villes de la route
+		//mï¿½langer alï¿½atoirement les villes de la route
 		Collections.shuffle(this.cities);
 	}
 
@@ -33,6 +37,12 @@ public class Route {
 
 	public double getTotalDistance() {
 		int citiesSize = this.cities.size();
-		//à compléter
+		double totalDistance = 0;
+		
+		for(int i = 0; i < citiesSize - 1; i++){
+			totalDistance += cities.get(i).measureDistance(cities.get(i+1));
+		}
+		totalDistance += cities.get(citiesSize-1).measureDistance(cities.get(0));
+		return totalDistance;
 	}
 }

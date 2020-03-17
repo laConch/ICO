@@ -7,9 +7,9 @@ import support.City;
 
 public class RecuitSimuleAlgorithm {
 
+	public static double temperature = 1000;
 	
-	
-	public static Route obtainOptimalSolutionWithRecuitSimuleAlgorithm(Route initialRoute) {
+	public static Route obtainOptimalSolutionWithRecuitSimuleAlgorithm(Route initialRoute, Double coefficientRefroidissement, int nbIterationMaxPerCycle) {
 		
 		Route currentRoute = new Route(initialRoute);
 		Route searchedRoute = new Route(initialRoute);
@@ -21,12 +21,7 @@ public class RecuitSimuleAlgorithm {
 		for(int i = 0; i < routeSize; i++) {
 			averageDistance += initialRoute.getCities().get(i).measureDistance(initialRoute.getStartCity());
 		}
-		double temperature = averageDistance/routeSize;
-		System.out.println("Temperature : " + temperature);
-		final double coefficientRefroidissement = 0.95;
-		final int nbIterationMaxPerCycle = 500;
-
-		
+		temperature = averageDistance/routeSize;
 		Boolean nouveauCycle = true;
 		
 		while(nouveauCycle) {

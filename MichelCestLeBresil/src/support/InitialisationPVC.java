@@ -73,8 +73,10 @@ public class InitialisationPVC {
 			}
 			nbOfCitiesVisited += 1;
 			if(nbOfCitiesVisited == 15494) {
+				br.close();
 				break;
 			}
+			br.close();
 			}
 		}
 		catch (IOException e){  

@@ -5,24 +5,24 @@ package support;
  */
 public class City {
 
-//Constants
+	// Constants
 	private static final double EARTH_EQUATORIAL_RADIUS = 6378.1370D;
 	private static final double CONVERT_DEGREES_TO_RADIANS = Math.PI / 180D;
 	// private static final double CONVERT_KMS_TO_MILES = 0.621371;
 
-//Attributes
+	// Attributes
 	private double longitude;
 	private double latitude;
 	private String name;
 
-//Constructors
+	// Constructors
 	public City(String name, double latitude, double longitude) {
 		this.name = name;
 		this.latitude = latitude * CONVERT_DEGREES_TO_RADIANS;
 		this.longitude = longitude * CONVERT_DEGREES_TO_RADIANS;
 	}
 
-//Getters
+	// Getters
 	public double getLongitude() {
 		return this.longitude;
 	}
@@ -35,7 +35,7 @@ public class City {
 		return this.name;
 	}
 
-//ToString
+	// ToString
 	public String toString() {
 		return this.name;
 	}

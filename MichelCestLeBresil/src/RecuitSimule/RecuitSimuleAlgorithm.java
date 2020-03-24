@@ -7,7 +7,8 @@ import support.City;
 
 public class RecuitSimuleAlgorithm {
 
-	public static double temperature = 1000;
+	public static double initialTemperature;
+	public static double temperature;
 	
 	public static Route obtainOptimalSolutionWithRecuitSimuleAlgorithm(Route initialRoute, Double coefficientRefroidissement, int nbIterationMaxPerCycle) {
 		
@@ -21,7 +22,8 @@ public class RecuitSimuleAlgorithm {
 		for(int i = 0; i < routeSize; i++) {
 			averageDistance += initialRoute.getCities().get(i).measureDistance(initialRoute.getStartCity());
 		}
-		temperature = averageDistance/routeSize;
+		initialTemperature = averageDistance/routeSize;
+		temperature = initialTemperature;
 		Boolean nouveauCycle = true;
 		
 		while(nouveauCycle) {

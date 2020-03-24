@@ -64,4 +64,15 @@ public class Route {
 		}
 		System.out.print(startCity.getName());
 	}
+	
+	public String citiesNameOfRoute() {
+		String citiesName = "";
+		int citiesSize = cities.size();
+		citiesName += startCity.getName() + " / ";
+		for(int i = 0; i < citiesSize; i++){
+			citiesName += cities.get(i) + " / ";
+		}
+		citiesName += startCity.getName();
+		return citiesName;
+	}
 }

@@ -1,11 +1,11 @@
-package RecuitSimule;
+package algoRS;
 import support.Route;
 
 import java.util.Collections;
 
 import support.City;
 
-public class RecuitSimuleAlgorithm {
+public class AlgoRS {
 
 	public static double initialTemperature;
 	public static double temperature;

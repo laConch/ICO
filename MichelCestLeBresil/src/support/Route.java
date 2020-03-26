@@ -53,13 +53,14 @@ public class Route {
 		for(int i = 0; i < citiesSize; i++){
 			System.out.print(cities.get(i) + ", ");
 		}
+		System.out.println(cities.get(0).getName());
 		
 	}
 	
 	public String citiesNameOfRoute() {
 		String citiesName = "";
 		int citiesSize = cities.size();
-		
+
 		for(int i = 0; i < citiesSize; i++){
 			citiesName += cities.get(i) + " / ";
 		}

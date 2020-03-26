@@ -10,12 +10,12 @@ import RecuitSimule.RecuitSimuleAlgorithm;
 
 public class InitialisationPVC {
 	
-	public static final int nbOfCitiesMin = 10; // nbOfCitiesMin > 6
-	public static final int nbOfCitiesMax = 101; // nbOfCitiesMax > 6
+	public static final int nbOfCitiesMin = 7; // nbOfCitiesMin > 6
+	public static final int nbOfCitiesMax = 9; // nbOfCitiesMax > 6
 	public static int nbOfCities = 0; // initialisation
 	public static final int nbOfTestsPerNbOfCities = 100;
 	public static Double[] coefficientRefroidissementList = new Double[] {0.95};
-	public static int[] nbIterationMaxPerCycleList = new int[] {1000};
+	public static int[] nbIterationMaxPerCycleList = new int[] {500};
 	public static final String csvColumnDelimeter =",";
 	public static final String csvRowDelimeter ="\n";
 
@@ -24,14 +24,14 @@ public class InitialisationPVC {
 		int nbOfTestsRealised = 0;
 		String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing" + csvColumnDelimeter + "Duration (in ns)" + csvColumnDelimeter + "Temperature" + csvColumnDelimeter + "Coefficient de refroidissement" + csvColumnDelimeter + "NbIterationMaxPerCycle" +csvRowDelimeter;
 		String contentToWrite = "";
-		for (int i = nbOfCitiesMin; i < nbOfCitiesMax; i+=10) {
+		for (int i = nbOfCitiesMin; i < nbOfCitiesMax; i+=3) {
 			nbOfCities = i;
 			for(Double j: coefficientRefroidissementList) {
 				for(int k: nbIterationMaxPerCycleList) {
 					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
 						//Initialise the route with one of the two methods
 						//Route initialRoute = new Route(init(),0);
-						Route initialRoute = new Route(init2("FRA"),0);//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
+						Route initialRoute = new Route(init2("FRA"));//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
 						
 						//Calculate the optimal route with the Recuit Simule Algorithm and calculate the duration of the method
 						long startTime = System.nanoTime();
@@ -45,6 +45,7 @@ public class InitialisationPVC {
 				}
 			}
 		}
+		System.out.println("Help");
 		writeOptimateResultInCSVFileCourbesComparaison(header,contentToWrite);
 		
 		/**

@@ -20,7 +20,7 @@ public class RecuitSimuleAlgorithm {
 		
 		double averageDistance = 0;
 		for(int i = 0; i < routeSize; i++) {
-			averageDistance += initialRoute.getCities().get(i).measureDistance(initialRoute.getStartCity());
+			averageDistance += initialRoute.getCities().get(i).measureDistance(initialRoute.getCities().get(0));
 		}
 		initialTemperature = averageDistance/routeSize;
 		temperature = initialTemperature;

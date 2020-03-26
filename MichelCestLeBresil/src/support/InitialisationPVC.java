@@ -10,28 +10,28 @@ import RecuitSimule.RecuitSimuleAlgorithm;
 
 public class InitialisationPVC {
 	
-	public static final int nbOfCitiesMin = 7; // nbOfCitiesMin > 6
-	public static final int nbOfCitiesMax = 20; // nbOfCitiesMax > 6
-	public static int nbOfCities = 7; // nbOfCities > 6
-	public static final int nbOfTestsPerNbOfCities = 10;
-	public static Double[] coefficientRefroidissementList = new Double[] {0.5,0.6,0.7,0.8,0.9};
-	public static int[] nbIterationMaxPerCycleList = new int[] {400,500,600};
+	public static final int nbOfCitiesMin = 10; // nbOfCitiesMin > 6
+	public static final int nbOfCitiesMax = 101; // nbOfCitiesMax > 6
+	public static int nbOfCities = 0; // initialisation
+	public static final int nbOfTestsPerNbOfCities = 100;
+	public static Double[] coefficientRefroidissementList = new Double[] {0.95};
+	public static int[] nbIterationMaxPerCycleList = new int[] {1000};
 	public static final String csvColumnDelimeter =",";
 	public static final String csvRowDelimeter ="\n";
 
 	public static void main(String[] args) {
 
 		int nbOfTestsRealised = 0;
-		String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Duration (in ns)" + csvColumnDelimeter + "Temperature" + csvColumnDelimeter + "Coefficient de refroidissement" + csvColumnDelimeter + "NbIterationMaxPerCycle" +csvRowDelimeter;
+		String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing" + csvColumnDelimeter + "Duration (in ns)" + csvColumnDelimeter + "Temperature" + csvColumnDelimeter + "Coefficient de refroidissement" + csvColumnDelimeter + "NbIterationMaxPerCycle" +csvRowDelimeter;
 		String contentToWrite = "";
-		for (int i = nbOfCitiesMin; i < nbOfCitiesMax; i+=3) {
+		for (int i = nbOfCitiesMin; i < nbOfCitiesMax; i+=10) {
 			nbOfCities = i;
 			for(Double j: coefficientRefroidissementList) {
 				for(int k: nbIterationMaxPerCycleList) {
 					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
 						//Initialise the route with one of the two methods
 						//Route initialRoute = new Route(init(),0);
-						Route initialRoute = new Route(init2("FRA"),6);//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
+						Route initialRoute = new Route(init2("FRA"),0);//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
 						
 						//Calculate the optimal route with the Recuit Simule Algorithm and calculate the duration of the method
 						long startTime = System.nanoTime();
@@ -40,7 +40,7 @@ public class InitialisationPVC {
 						long duration = (endTime - startTime);
 						
 						//Add the relative information of the test to the content to write
-						contentToWrite += i + csvColumnDelimeter + optimalRoute.getTotalDistance() + csvColumnDelimeter + Long.toString(duration) + csvColumnDelimeter + RecuitSimuleAlgorithm.temperature + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter;
+						contentToWrite += i + csvColumnDelimeter + optimalRoute.getTotalDistance() + csvColumnDelimeter + optimalRoute.citiesNameOfRoute() + csvColumnDelimeter + Long.toString(duration) + csvColumnDelimeter + RecuitSimuleAlgorithm.initialTemperature + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter;
 					}
 				}
 			}

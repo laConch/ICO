@@ -31,9 +31,15 @@ public class Driver {
 	 */
 	public static void executeGenetic() {
 		Driver driver = new Driver();
-		Population population = new Population(GeneticAlgorithm.POPULATION_SIZE, driver.initialRoute);
+		
+//		Population population = new Population(GeneticAlgorithm.POPULATION_SIZE, driver.initialRoute);
+		Population population = new Population(GeneticAlgorithm.POPULATION_SIZE, init2("FRA"));
+		
 		population.sortRoutesByFitness();
-		GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(driver.initialRoute);
+		
+//		GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(driver.initialRoute);
+		GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(init2("FRA"));
+		
 		int generationNumber = 0;
 		driver.printHeading(generationNumber++);
 		driver.printPopulation(population);
@@ -119,6 +125,8 @@ public class Driver {
 	}
 
 	/**
+	 * Return a list of cities extracted from the csv file "worldcities"
+	 * 
 	 * @param country : null for the world, "FRA" for France, "DEU" for Germany,
 	 *                "GBR" for United Kingdom, "USA" for United States, "RUS" for
 	 *                Russia.
@@ -133,34 +141,29 @@ public class Driver {
 		ArrayList<City> cities = new ArrayList<City>();
 
 		try {
-			// parsing a CSV file into BufferedReader class constructor
-			BufferedReader br = new BufferedReader(new FileReader("src/worldcities.csv"));
-			while ((line = br.readLine()) != null && nbOfCitiesAdded < nbOfCitiesMax) {
-				String[] city = line.split(splitBy); // use comma as separator
-				if (nbOfCitiesVisited != 0) {
-					if (country != null) {
-						String countryOfCityLine = city[6].substring(1, city[6].length() - 1);
-						if (countryOfCityLine.contentEquals(country)) {
-							cities.add(new City(city[1].substring(1, city[1].length() - 1),
-									Double.parseDouble(city[2].substring(1, city[2].length() - 1)),
-									Double.parseDouble(city[3].substring(1, city[3].length() - 1))));
-							// System.out.println(city[1].substring(1,city[1].length()-1));
-							nbOfCitiesAdded += 1;
-						}
-					} else {
-						cities.add(new City(city[1].substring(1, city[1].length() - 1),
-								Double.parseDouble(city[2].substring(1, city[2].length() - 1)),
-								Double.parseDouble(city[3].substring(1, city[3].length() - 1))));
-						// System.out.println(city[1].substring(1,city[1].length()-1));
+			//parsing a CSV file into BufferedReader class constructor
+			BufferedReader buffer = new BufferedReader(new FileReader("src/worldcities.csv"));  
+			while ((line = buffer.readLine()) != null && nbOfCitiesAdded < nbOfCitiesMax){  
+			String[] city = line.split(splitBy);    // use comma as separator    
+			if(nbOfCitiesVisited != 0) {
+				if(country != null) {
+					String countryOfCityLine = city[6].substring(1,city[6].length()-1);
+					if(countryOfCityLine.contentEquals(country)) {
+						cities.add(new City(city[1].substring(1,city[1].length()-1),Double.parseDouble(city[2].substring(1, city[2].length()-1)),Double.parseDouble(city[3].substring(1, city[3].length()-1))));
+						//System.out.println(city[1].substring(1,city[1].length()-1));
 						nbOfCitiesAdded += 1;
 					}
 				}
-				nbOfCitiesVisited += 1;
-				if (nbOfCitiesVisited == 15494) {
-					br.close();
-					break;
+				else {
+					cities.add(new City(city[1].substring(1,city[1].length()-1),Double.parseDouble(city[2].substring(1, city[2].length()-1)),Double.parseDouble(city[3].substring(1, city[3].length()-1))));
+					//System.out.println(city[1].substring(1,city[1].length()-1));
+					nbOfCitiesAdded += 1;
 				}
-				br.close();
+			}
+			nbOfCitiesVisited += 1;
+			if(nbOfCitiesVisited == 15494) {
+				break;
+			}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -20,7 +20,7 @@ import support.Route;
 public class GeneticAlgorithm {
 
 	public static final int POPULATION_SIZE = 8;
-	public static final int NUMBER_GENERATION = 30;
+	public static final int NUMBER_GENERATION = 100;
 
 	/*
 	 * Probability that a chromosome's gene will do random mutation. Here a

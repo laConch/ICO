@@ -41,7 +41,9 @@ public class City {
 	}
 
 	/**
-	 * Return the distance (km) between 2 cities
+	 * 
+	 * @param city
+	 * @return the distance (km) between 2 cities
 	 */
 	public double measureDistance(City city) {
 		double deltaLatitude = city.getLatitude() - this.getLatitude();

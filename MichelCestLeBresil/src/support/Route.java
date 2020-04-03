@@ -41,6 +41,7 @@ public class Route {
 	
 	/**
 	 * Constructor with another Route
+	 * 
 	 * @param route
 	 */
 	public Route(Route route) {

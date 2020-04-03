@@ -1,31 +1,36 @@
-package RecuitSimule;
-import support.Route;
+package comportements;
 
 import java.util.Collections;
 
-import support.City;
+import agents.AgentRS;
+import jade.core.Agent;
+import support.Main;
+import support.Route;
 
-public class RecuitSimuleAlgorithm {
-
+public class ComportementRS extends jade.core.behaviours.OneShotBehaviour{
 	
+	public ComportementRS(Agent a) {
+		super(a);
+	}
 	
-	public static Route obtainOptimalSolutionWithRecuitSimuleAlgorithm(Route initialRoute) {
+	@Override
+	public void action() {
+		// TODO Auto-generated method stub
+		//Initialisation des paramètres de l'algorithme 
+		Route currentRoute = new Route(Main.routeInitialeAgentRS);
+		Route searchedRoute = new Route(Main.routeInitialeAgentRS);
+		AgentRS.routeOptimaleAgentRS = new Route(Main.routeInitialeAgentRS);
+		double coefficientRefroidissement = AgentRS.coefficientRefroidissementAgentRS;
+		int nbIterationMaxPerCycle = AgentRS.nbIterationMaxPerCycleAgentRS;
 		
-		Route currentRoute = new Route(initialRoute);
-		Route searchedRoute = new Route(initialRoute);
-		Route optimalRoute = new Route(initialRoute);
+		
+		int routeSize = currentRoute.getCities().size();
 
-		int routeSize = initialRoute.getCities().size();
-		
 		double averageDistance = 0;
 		for(int i = 0; i < routeSize; i++) {
-			averageDistance += initialRoute.getCities().get(i).measureDistance(initialRoute.getStartCity());
+			averageDistance += currentRoute.getCities().get(i).measureDistance(currentRoute.getCities().get(0));
 		}
 		double temperature = averageDistance/routeSize;
-		System.out.println("Temperature : " + temperature);
-		final double coefficientRefroidissement = 0.95;
-		final int nbIterationMaxPerCycle = 500;
-
 		
 		Boolean nouveauCycle = true;
 		
@@ -50,12 +55,12 @@ public class RecuitSimuleAlgorithm {
 						nouveauCycle = true;
 					}
 				}
-				if(currentRoute.getTotalDistance()<optimalRoute.getTotalDistance()) {
-					optimalRoute = new Route(currentRoute);
+				if(currentRoute.getTotalDistance()<AgentRS.routeOptimaleAgentRS.getTotalDistance()) {
+					AgentRS.routeOptimaleAgentRS = new Route(currentRoute);
 				}
 			}
 			temperature *= coefficientRefroidissement;
 		}
-		return optimalRoute;
-	}	
+	}
+	
 }

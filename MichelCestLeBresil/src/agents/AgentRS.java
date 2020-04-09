@@ -9,8 +9,8 @@ public class AgentRS extends jade.core.Agent{
 
 	
 	public static Route routeOptimaleAgentRS;
-	public static double coefficientRefroidissementAgentRS = 0.95;
-	public static int nbIterationMaxPerCycleAgentRS = 500;
+	public static double coefficientRefroidissementAgentRS = 0.98;
+	public static int nbIterationMaxPerCycleAgentRS = 1000;
 	
 	protected void setup() {
 		SequentialBehaviour comportementSequentiel = new SequentialBehaviour();

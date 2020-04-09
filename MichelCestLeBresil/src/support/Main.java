@@ -21,19 +21,19 @@ public class Main {
 	public static Route routeInitialeAgentRS;
 	
 	//Paramètres test algorithme RS
-	public static final int nbOfCitiesMin = 10; // nbOfCitiesMin > 6
-	public static final int nbOfCitiesMax = 30; // nbOfCitiesMax > 6
-	public static final int nbOfTestsPerNbOfCities = 100;
-	public static Double[] coefficientRefroidissementList = new Double[] {0.8,0.9,0.95,0.99};
-	public static int[] nbIterationMaxPerCycleList = new int[] {250,500,750};
+	public static final int nbOfCitiesMin = 10; // 6 < nbOfCitiesMin ≤ 15494
+	public static final int nbOfCitiesMax = 100; // nbOfCitiesMax > nbOfCitiesMin
+	public static final int stepNbOfCities = 10; // stepNbOfCities > 0
+	public static final int nbOfTestsPerNbOfCities = 5;
+	public static Double[] coefficientRefroidissementList = new Double[] {0.98};
+	public static int[] nbIterationMaxPerCycleList = new int[] {1000};
 	public static final String csvColumnDelimeter =",";
 	public static final String csvRowDelimeter ="\n";
-
 	
 	
 	public static void main(String[] args) {
-		lancerAgentRS();
-		//testerAlgorithmeRS();
+		//lancerAgentRS();
+		testerAlgorithmeRS();
 	}
 	
 	
@@ -41,7 +41,7 @@ public class Main {
 	public static void lancerAgentRS() {
 		//initialisation de la route initiale
 		//routeInitialeAgentRS = new Route(initialisationBasique());
-		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
+		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
 		
 		//Création d’une instance de l’environnement Jade
 		jade.core.Runtime rt = jade.core.Runtime.instance();
@@ -66,16 +66,16 @@ public class Main {
 	
 	public static void testerAlgorithmeRS() {
 		int nbOfTestsRealised = 0;
-		String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing" + csvColumnDelimeter + "Duration (in ns)" + csvColumnDelimeter + "Temperature" + csvColumnDelimeter + "Coefficient de refroidissement" + csvColumnDelimeter + "NbIterationMaxPerCycle" +csvRowDelimeter;
+		String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing" + csvColumnDelimeter + "Duration (in ms)" + csvColumnDelimeter + "Temperature" + csvColumnDelimeter + "Cooling coefficient" + csvColumnDelimeter + "Number of iterations per cycle" +csvRowDelimeter;
 		String contentToWrite = "";
-		for (int i = nbOfCitiesMin; i < nbOfCitiesMax; i+=3) {
+		for (int i = nbOfCitiesMin; i < nbOfCitiesMax+1; i+=stepNbOfCities) {
 			nbOfCities = i;
 			for(Double j: coefficientRefroidissementList) {
 				for(int k: nbIterationMaxPerCycleList) {
 					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
 						//Initialise the route with one of the two methods
 						//Route initialRoute = new Route(initalisationBasique(),0);
-						Route initialRoute = new Route(initialisationComplexe(countryOfCities));//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
+						Route initialRoute = new Route(initialisationComplexe(countryOfCities));
 						
 						//Calculate the optimal route with the Recuit Simule Algorithm and calculate the duration of the method
 						long startTime = System.nanoTime();
@@ -84,8 +84,9 @@ public class Main {
 						long duration = (endTime - startTime);
 						
 						//Add the relative information of the test to the content to write
-						contentToWrite += i + csvColumnDelimeter + optimalRoute.getTotalDistance() + csvColumnDelimeter + optimalRoute.citiesNameOfRoute() + csvColumnDelimeter + Long.toString(duration) + csvColumnDelimeter + AlgoRS.initialTemperature + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter;
+						contentToWrite += i + csvColumnDelimeter + optimalRoute.getTotalDistance() + csvColumnDelimeter + optimalRoute.citiesNameOfRoute() + csvColumnDelimeter + Long.toString(Math.round(duration/1000000)) + csvColumnDelimeter + AlgoRS.initialTemperature + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter;
 					}
+					System.out.println(i + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter);
 				}
 			}
 		}

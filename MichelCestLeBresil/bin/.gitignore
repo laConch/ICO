@@ -1,6 +1,6 @@
-/Agents/
+/.DS_Store
 /agents/
-/algorithmeRecuitSimule/
-/support/
-/comportements/
 /algoRS/
+/comportements/
+/courbescomparaison.csv
+/support/

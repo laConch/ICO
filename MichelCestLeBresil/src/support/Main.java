@@ -1,9 +1,7 @@
 package support;
 
 import java.util.ArrayList;
-import org.eclipse.jdt.annotation.Nullable;
-import agents.AgentRS;
-import algoRS.AlgoRS;
+import algoMetaheuristique.AlgoRS;
 import jade.core.ProfileImpl;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
@@ -16,17 +14,18 @@ import java.io.IOException;
 public class Main {
 	
 	//Paramètre initialisationComplexe
-	public static int nbOfCities = 10;
+	public static int nbOfCities = 10; // 2 ≤ nbOfCities ≤ 15494
+	public static String countryOfCities = "WORLD";//"WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
 	
 	//Paramètre agentRS
 	public static Route routeInitialeAgentRS;
 	
 	//Paramètres test algorithme RS
-	public static final int nbOfCitiesMin = 7; // nbOfCitiesMin > 6
-	public static final int nbOfCitiesMax = 9; // nbOfCitiesMax > 6
+	public static final int nbOfCitiesMin = 10; // nbOfCitiesMin > 6
+	public static final int nbOfCitiesMax = 30; // nbOfCitiesMax > 6
 	public static final int nbOfTestsPerNbOfCities = 100;
-	public static Double[] coefficientRefroidissementList = new Double[] {0.95};
-	public static int[] nbIterationMaxPerCycleList = new int[] {500};
+	public static Double[] coefficientRefroidissementList = new Double[] {0.8,0.9,0.95,0.99};
+	public static int[] nbIterationMaxPerCycleList = new int[] {250,500,750};
 	public static final String csvColumnDelimeter =",";
 	public static final String csvRowDelimeter ="\n";
 
@@ -42,7 +41,7 @@ public class Main {
 	public static void lancerAgentRS() {
 		//initialisation de la route initiale
 		//routeInitialeAgentRS = new Route(initialisationBasique());
-		routeInitialeAgentRS = new Route(initialisationComplexe("FRA"));//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
+		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
 		
 		//Création d’une instance de l’environnement Jade
 		jade.core.Runtime rt = jade.core.Runtime.instance();
@@ -76,7 +75,7 @@ public class Main {
 					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
 						//Initialise the route with one of the two methods
 						//Route initialRoute = new Route(initalisationBasique(),0);
-						Route initialRoute = new Route(initialisationComplexe("FRA"));//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
+						Route initialRoute = new Route(initialisationComplexe(countryOfCities));//null for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
 						
 						//Calculate the optimal route with the Recuit Simule Algorithm and calculate the duration of the method
 						long startTime = System.nanoTime();
@@ -90,7 +89,6 @@ public class Main {
 				}
 			}
 		}
-		System.out.println("Help");
 		writeOptimateResultInCSVFileCourbesComparaison(header,contentToWrite);
 	}
 	
@@ -117,7 +115,7 @@ public class Main {
 		return cities;
 	}
 	
-	public static ArrayList<City> initialisationComplexe(@Nullable String country){
+	public static ArrayList<City> initialisationComplexe(String country){
 		//Initialise the route from a certain number of cities from all around the world or from a country thanks to a csv database
 		
 		String line = "";  
@@ -133,7 +131,12 @@ public class Main {
 			while ((line = br.readLine()) != null && nbOfCitiesAdded < nbOfCities){  
 			String[] city = line.split(splitBy);    // use comma as separator    
 			if(nbOfCitiesVisited != 0) {
-				if(country != null) {
+				if(country.contentEquals("WORLD")){
+					cities.add(new City(city[1].substring(1,city[1].length()-1),Double.parseDouble(city[2].substring(1, city[2].length()-1)),Double.parseDouble(city[3].substring(1, city[3].length()-1))));
+					//System.out.println(city[1].substring(1,city[1].length()-1));
+					nbOfCitiesAdded += 1;
+				}
+				else if(country.length() == 3) {
 					String countryOfCityLine = city[6].substring(1,city[6].length()-1);
 					if(countryOfCityLine.contentEquals(country)) {
 						cities.add(new City(city[1].substring(1,city[1].length()-1),Double.parseDouble(city[2].substring(1, city[2].length()-1)),Double.parseDouble(city[3].substring(1, city[3].length()-1))));
@@ -141,11 +144,7 @@ public class Main {
 						nbOfCitiesAdded += 1;
 					}
 				}
-				else {
-					cities.add(new City(city[1].substring(1,city[1].length()-1),Double.parseDouble(city[2].substring(1, city[2].length()-1)),Double.parseDouble(city[3].substring(1, city[3].length()-1))));
-					//System.out.println(city[1].substring(1,city[1].length()-1));
-					nbOfCitiesAdded += 1;
-				}
+				
 			}
 			nbOfCitiesVisited += 1;
 			if(nbOfCitiesVisited == 15494) {

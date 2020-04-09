@@ -1,4 +1,4 @@
-package algoRS;
+package algoMetaheuristique;
 import support.Route;
 
 import java.util.Collections;

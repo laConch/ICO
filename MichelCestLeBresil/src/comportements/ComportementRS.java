@@ -9,6 +9,11 @@ import support.Route;
 
 public class ComportementRS extends jade.core.behaviours.OneShotBehaviour{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ComportementRS(Agent a) {
 		super(a);
 	}

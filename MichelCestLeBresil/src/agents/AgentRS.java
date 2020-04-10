@@ -8,6 +8,11 @@ import support.Route;
 public class AgentRS extends jade.core.Agent{
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static Route routeOptimaleAgentRS;
 	public static double coefficientRefroidissementAgentRS = 0.98;
 	public static int nbIterationMaxPerCycleAgentRS = 1000;
@@ -16,6 +21,11 @@ public class AgentRS extends jade.core.Agent{
 		SequentialBehaviour comportementSequentiel = new SequentialBehaviour();
 		comportementSequentiel.addSubBehaviour(new ComportementRS(this));
 		comportementSequentiel.addSubBehaviour(new OneShotBehaviour() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public void action() {
 				System.out.println("La distance obtenue est de : " + routeOptimaleAgentRS.getTotalDistance());
 				routeOptimaleAgentRS.printCitiesNameOfRoute();

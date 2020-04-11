@@ -7,16 +7,15 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
 
 /**
- * Container for the genetic algorithm agent
+ * Container for the coordinator agent
  * 
- * @author Sethian & Bouzereau
- * @since Apr 2, 2020
+ * @since Apr 11, 2020
  */
-public class GeneticContainer {
+public class CoordinatorContainer {
 
 	public static void main(String[] args) {
 		try {
-			// Instance of Jade environment
+			// Instance of the Jade environment
 			Runtime runtime = Runtime.instance();
 
 			// Container's profile
@@ -26,16 +25,15 @@ public class GeneticContainer {
 			// Agent container creation
 			AgentContainer agentContainer = runtime.createAgentContainer(profileImpl);
 
-			AgentController agentController = agentContainer.createNewAgent("genetic", GeneticAgent.class.getName(),
-					new Object[] {});
-
+			AgentController agentController = agentContainer.createNewAgent("coordinator",
+					CoordinatorAgent.class.getName(), new Object[] {});
+			
 			// Launch the agent
 			agentController.start();
-
+			
 		} catch (ControllerException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }

@@ -2,6 +2,7 @@ package comportements;
 
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
+import support.Main;
 
 public class GeneticBehaviour extends OneShotBehaviour {
 
@@ -35,6 +36,7 @@ public class GeneticBehaviour extends OneShotBehaviour {
 		} else {
 			// Default action while no coordinator agent
 			// TODO launch Genetic Algorithm
+			Main.executeGenetic();
 		}
 	}
 

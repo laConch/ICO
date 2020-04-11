@@ -3,6 +3,7 @@ package algoMetaheuristique;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
+import errors.GeneticCreationException;
 import support.City;
 import support.Route;
 
@@ -13,32 +14,54 @@ import support.Route;
  */
 public class GeneticAlgorithm {
 
-	public static final int POPULATION_SIZE = 8;
-	public static final int NUMBER_GENERATION = 100;
+	public int populationSize = 8;
+	public int numberGeneration = 1000;
 
 	/*
 	 * Probability that a chromosome's gene will do random mutation. Here a
 	 * chromosome is a Route and a gene is a City in that Route.
 	 */
-	public static final double MUTATION_RATE = 0.25;
+	public double mutationRate = 0.25;
 
 	/*
 	 * Tournament population that is used for the Route's crossover selection.
+	 * Should be less than populationSize
 	 */
-	public static final int TOURNAMENT_SELECTION_SIZE = 3;
+	public int tournamentSelectionSize = 3;
 
 	/*
 	 * Routes that are not subject to crossover or selection from one generation to
 	 * the next.
+	 * Should be less than populationSize
 	 */
-	public static final int NUMBER_ELITE_ROUTES = 1;
+	public int numberEliteRoute = 1;
 	
 	// To fix the size of the Routes
 	private ArrayList<City> initialRoute = null;
 
-	// Getter
+	// Getters
 	public ArrayList<City> getInitialRoute() {
 		return this.initialRoute;
+	}
+	
+	public int getPopulationSize() {
+		return populationSize;
+	}
+
+	public int getNumberGeneration() {
+		return numberGeneration;
+	}
+
+	public double getMutationRate() {
+		return mutationRate;
+	}
+
+	public int getTournamentSelectionSize() {
+		return tournamentSelectionSize;
+	}
+
+	public int getNumberEliteRoute() {
+		return numberEliteRoute;
 	}
 
 	/**
@@ -48,6 +71,49 @@ public class GeneticAlgorithm {
 	 */
 	public GeneticAlgorithm(ArrayList<City> initialRoute) {
 		this.initialRoute = initialRoute;
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param initialRoute
+	 * @param populationSize
+	 * @param numberGeneration
+	 * @param mutationRate
+	 * @param tournamentSelectionSize
+	 * @param numberEliteRoute
+	 */
+	public GeneticAlgorithm(ArrayList<City> initialRoute, int populationSize, int numberGeneration, double mutationRate,
+			int tournamentSelectionSize, int numberEliteRoute) {
+		this.initialRoute = initialRoute;
+		this.populationSize = populationSize;
+		this.numberGeneration = numberGeneration;
+		
+		try {
+			parametersValidation(mutationRate, tournamentSelectionSize, numberEliteRoute, populationSize);
+		} catch (GeneticCreationException e) {
+			System.out.println("Error in GeneticAlgorithm creation : " + e);
+		}
+		this.mutationRate = mutationRate;
+		this.tournamentSelectionSize = tournamentSelectionSize;
+		this.numberEliteRoute = numberEliteRoute;
+	}
+	
+	/**
+	 * Validation of the parameters below
+	 * 
+	 * @param mutationRate            : should be between 0 and 1
+	 * @param tournamentSelectionSize : should be below populationSize
+	 * @param numberEliteRoute        : should be below populationSize
+	 */
+	private void parametersValidation(double mutationRate, int tournamentSelectionSize, int numberEliteRoute,
+			int populationSize) throws GeneticCreationException {
+		if (mutationRate < 0 || mutationRate > 1)
+			throw new GeneticCreationException("MutationRate should be between 0 and 1");
+		if (tournamentSelectionSize > populationSize)
+			throw new GeneticCreationException("TournamentSelectionSize should be below populationSize");
+		if (numberEliteRoute > populationSize)
+			throw new GeneticCreationException("NumberEliteRoute should be below populationSize");
 	}
 
 	/**
@@ -67,11 +133,11 @@ public class GeneticAlgorithm {
 	 * @return after crossover Population
 	 */
 	private Population crossoverPopulation(Population population) {
-		Population crossoverPopulation = new Population(population.getRoutes().size(), this);
-		IntStream.range(0, NUMBER_ELITE_ROUTES)
+		Population crossoverPopulation = new Population(this);
+		IntStream.range(0, this.numberEliteRoute)
 				.forEach(x -> crossoverPopulation.getRoutes().set(x, population.getRoutes().get(x)));
 
-		IntStream.range(NUMBER_ELITE_ROUTES, crossoverPopulation.getRoutes().size()).forEach(x -> {
+		IntStream.range(this.numberEliteRoute, crossoverPopulation.getRoutes().size()).forEach(x -> {
 			Route route1 = selectTournamentPopulation(population).getRoutes().get(0);
 			Route route2 = selectTournamentPopulation(population).getRoutes().get(0);
 			crossoverPopulation.getRoutes().set(x, crossoverRoute(route1, route2));
@@ -120,14 +186,14 @@ public class GeneticAlgorithm {
 	}
 
 	/**
-	 * Select randomly TOURNAMENT_SELECTION_SIZE Routes in the given Population.
+	 * Select randomly tournamentSelectionSize Routes in the given Population.
 	 * 
 	 * @param population
 	 * @return the tournament Population sorted by fitness
 	 */
 	private Population selectTournamentPopulation(Population population) {
-		Population tournamentPopulation = new Population(TOURNAMENT_SELECTION_SIZE, this);
-		IntStream.range(0, TOURNAMENT_SELECTION_SIZE).forEach(x -> tournamentPopulation.getRoutes().set(x,
+		Population tournamentPopulation = new Population(this, population.getRoutes().get(0).getCities(), this.tournamentSelectionSize);
+		IntStream.range(0, this.tournamentSelectionSize).forEach(x -> tournamentPopulation.getRoutes().set(x,
 				population.getRoutes().get((int) (Math.random() * population.getRoutes().size()))));
 		tournamentPopulation.sortRoutesByFitness();
 		return tournamentPopulation;
@@ -141,20 +207,20 @@ public class GeneticAlgorithm {
 	 * @return after mutation Population
 	 */
 	private Population mutatePopulation(Population population) {
-		population.getRoutes().stream().filter(x -> population.getRoutes().indexOf(x) >= NUMBER_ELITE_ROUTES)
+		population.getRoutes().stream().filter(x -> population.getRoutes().indexOf(x) >= this.numberEliteRoute)
 				.forEach(x -> mutateRoute(x));
 		return population;
 	}
 
 	/**
 	 * Switch each city in the route with another city with a probability of
-	 * MUTATION_RATE
+	 * mutationRate
 	 * 
 	 * @param route
 	 * @return after mutation Route
 	 */
 	private Route mutateRoute(Route route) {
-		route.getCities().stream().filter(x -> Math.random() < MUTATION_RATE).forEach(cityX -> {
+		route.getCities().stream().filter(x -> Math.random() < this.mutationRate).forEach(cityX -> {
 			int y = (int) (route.getCities().size() * Math.random());
 			City cityY = route.getCities().get(y);
 			// Switch cityX and cityY

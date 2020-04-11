@@ -1,2 +1,8 @@
 /agents/
+<<<<<<< HEAD
 /support/
+=======
+/errors/
+>>>>>>> First steps for writing in csv file
+/algoMetaheuristique/
+/comportements/

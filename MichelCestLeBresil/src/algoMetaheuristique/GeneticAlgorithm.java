@@ -8,12 +8,6 @@ import support.Route;
 
 /**
  * This class implements the genetic algorithm
- * 
- * @author 
- * @created 3/19/2020
- */
-/**
- * This class implements the genetic algorithm
  * @author Sethian & Bouzereau
  * @since Mar 19, 2020
  */
@@ -38,7 +32,8 @@ public class GeneticAlgorithm {
 	 * the next.
 	 */
 	public static final int NUMBER_ELITE_ROUTES = 1;
-
+	
+	// To fix the size of the Routes
 	private ArrayList<City> initialRoute = null;
 
 	// Getter

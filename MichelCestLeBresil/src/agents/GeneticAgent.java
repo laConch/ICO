@@ -2,13 +2,12 @@ package agents;
 
 import comportements.GeneticBehaviour;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.ParallelBehaviour;
+import jade.core.behaviours.SequentialBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.lang.acl.ACLMessage;
 
 /**
  * Genetic Agent (daemon -> no graphical user interface)
@@ -27,14 +26,13 @@ public class GeneticAgent extends Agent {
 		//yellowPagesRegistration();
 		System.out.println(this.getLocalName() + " is ready");
 		// Adding a behavior
-		/*
-		ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
-		addBehaviour(parallelBehaviour);
 		
-		GeneticBehaviour behaviour1 = new GeneticBehaviour(receive());
-		parallelBehaviour.addSubBehaviour(behaviour1);
-		send(behaviour1.response);	
-		*/
+		SequentialBehaviour sequentialBehaviour = new SequentialBehaviour();
+		addBehaviour(sequentialBehaviour);
+		
+		
+		sequentialBehaviour.addSubBehaviour(new GeneticBehaviour());
+		//coordinator agent creation & update gentic agent
 	}
 	
 

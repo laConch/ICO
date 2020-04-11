@@ -1,20 +1,23 @@
 package comportements;
 
-import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 
-public class GeneticBehaviour extends CyclicBehaviour {
+public class GeneticBehaviour extends OneShotBehaviour {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	// For the communication with the coordinator agent
 	public ACLMessage received;
-	
 	public ACLMessage response;
 	
-	// Constructor
+	// Constructors
+	public GeneticBehaviour() {
+	}
+	
 	public GeneticBehaviour(ACLMessage received) {
 		this.received = received;
 	}
@@ -29,8 +32,10 @@ public class GeneticBehaviour extends CyclicBehaviour {
 			this.response = received.createReply();
 			this.response.setPerformative(ACLMessage.INFORM);
 			this.response.setContent("Demande received : processing");
-		} else
-			block();
+		} else {
+			// Default action while no coordinator agent
+			// TODO launch Genetic Algorithm
+		}
 	}
 
 }

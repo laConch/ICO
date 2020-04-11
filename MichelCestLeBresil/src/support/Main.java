@@ -48,9 +48,14 @@ public class Main {
 	public static final int stepNbOfCities = 10;
 	public static final int nbOfTestsPerNbOfCities = 5;
 	public static Double[] coefficientRefroidissementList = new Double[] { 0.98 };
-	public static int[] nbIterationMaxPerCycleList = new int[] { 1000 };
+	public static int[] nbIterationMaxPerCycleList = new int[] { 50 };
+
+	
 	public static int[] tabouListSizeList = new int[] {10};
 	public static int[] nbIterationTabouList = new int[] { 50 };
+
+	
+	// coordinator agent creation & update gentic agent
 	public static final String csvColumnDelimeter = ",";
 	public static final String csvRowDelimeter = "\n";
 	
@@ -111,7 +116,7 @@ public class Main {
 			for (Double j : coefficientRefroidissementList) {
 				for (int k : nbIterationMaxPerCycleList) {
 					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
-						// Initialise the route with one of the two methods
+						// Initialize the route with one of the two methods
 						// Route initialRoute = new Route(initalisationBasique(),0);
 						Route initialRoute = new Route(initialisationComplexe(countryOfCities));
 
@@ -181,17 +186,19 @@ public class Main {
 	public static void executeGenetic() {
 		Main driver = new Main();
 		
-//		Population population = new Population(GeneticAlgorithm.POPULATION_SIZE, driver.initialRoute);
-		Population population = new Population(GeneticAlgorithm.POPULATION_SIZE, initialisationComplexe("FRA"));
+//		ArrayList<City> route = initialisationBasique();
+		ArrayList<City> route = initialisationComplexe("FRA");
 		
+		// Random population
+		Population population = new Population(GeneticAlgorithm.POPULATION_SIZE, route);
 		population.sortRoutesByFitness();
 		
-//		GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(driver.initialRoute);
-		GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(initialisationComplexe("FRA"));
+		GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(route);
 		
 		int generationNumber = 0;
 		driver.printHeading(generationNumber++);
 		driver.printPopulation(population);
+		
 		while (generationNumber < GeneticAlgorithm.NUMBER_GENERATION) {
 			driver.printHeading(generationNumber++);
 			population = geneticAlgorithm.evolve(population);
@@ -217,15 +224,6 @@ public class Main {
 		
 		return initialRoute;
 	}
-
-	// TODO remove this or the function above
-	// Sample of 6 cities to test the algorithms
-	public ArrayList<City> initialRoute = new ArrayList<City>(
-			Arrays.asList(
-					new City("Bordeaux", 44.833333, -0.566667), new City("Lyon", 45.750000, 4.850000),
-					new City("Nantes", 47.216667, -1.550000), new City("Paris", 48.866667, 2.333333),
-					new City("Marseille", 43.300000, 5.400000), new City("Dijon", 47.316667, 5.016667)
-					));
 	
 	/**
 	 * Return a list of cities extracted from the csv file "worldcities"
@@ -303,6 +301,7 @@ public class Main {
 		String headingColumn1 =  "Route";
 		String remainingHeadingColumns = "Fitness | Distance (in km)";
 		int cityNamesLength = 0;
+		ArrayList<City> initialRoute = initialisationBasique();
 		for (int i = 0; i < initialRoute.size(); i++)
 			cityNamesLength += initialRoute.get(i).getName().length();
 		

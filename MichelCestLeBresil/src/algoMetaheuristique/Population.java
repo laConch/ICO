@@ -7,7 +7,7 @@ import support.City;
 import support.Route;
 
 /**
- * This class represents a population
+ * This class represents a population for the genetic algorithm
  * 
  * By Sethian & Bouzereau 3/18/2020
  */
@@ -35,7 +35,7 @@ public class Population {
 	}
 
 	/**
-	 * Constructor
+	 * Constructors
 	 */
 	public Population(int populationSize, ArrayList<City> cities) {
 		IntStream.range(0, populationSize).forEach(x -> routes.add(new Route(cities)));

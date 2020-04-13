@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-<<<<<<< HEAD
-	<classpathentry kind="output" path="bin"/>
-</classpath>
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="src"/>
-=======
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
->>>>>>> refs/remotes/origin/master
-	<classpathentry kind="lib" path="org.eclipse.jdt.annotation_2.2.400.v20191120-1313.jar"/>
-	<classpathentry kind="lib" path="/Users/edouardmertz/Documents/5_Programmation/Eclipse/JADE-all-4.5.0/jade/lib/jade.jar"/>
+	<classpathentry kind="lib" path="/Users/felixberge/Documents/Centrale Lille/Intelligence collaborative/JADE-all-4/jade/lib/jade.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

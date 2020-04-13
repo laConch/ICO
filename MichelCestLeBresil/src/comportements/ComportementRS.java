@@ -9,6 +9,11 @@ import support.Route;
 
 public class ComportementRS extends jade.core.behaviours.OneShotBehaviour{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ComportementRS(Agent a) {
 		super(a);
 	}
@@ -22,7 +27,6 @@ public class ComportementRS extends jade.core.behaviours.OneShotBehaviour{
 		AgentRS.routeOptimaleAgentRS = new Route(Main.routeInitialeAgentRS);
 		double coefficientRefroidissement = AgentRS.coefficientRefroidissementAgentRS;
 		int nbIterationMaxPerCycle = AgentRS.nbIterationMaxPerCycleAgentRS;
-		
 		
 		int routeSize = currentRoute.getCities().size();
 
@@ -44,16 +48,17 @@ public class ComportementRS extends jade.core.behaviours.OneShotBehaviour{
 				int r2 = (int) Math.round(Math.random() * (routeSize-1));
 				Collections.swap(searchedRoute.getCities(), r1, r2);
 				double deltaDistance = searchedRoute.getTotalDistance()-currentRoute.getTotalDistance();
+				double probabiliteModificationAccepted = Math.exp(-deltaDistance/temperature);
 				if(deltaDistance<0) {
 					currentRoute = new Route(searchedRoute);
 					nouveauCycle = true;
 				}
-				else{
-					double probabiliteModificationAccepted = Math.exp(-deltaDistance/temperature);
-					if(Math.random()<probabiliteModificationAccepted) {
-						currentRoute = new Route(searchedRoute);
-						nouveauCycle = true;
-					}
+				else if(Math.random()<probabiliteModificationAccepted && deltaDistance>0){
+					currentRoute = new Route(searchedRoute);
+					nouveauCycle = true;
+				}
+				else {
+					searchedRoute = new Route(currentRoute);
 				}
 				if(currentRoute.getTotalDistance()<AgentRS.routeOptimaleAgentRS.getTotalDistance()) {
 					AgentRS.routeOptimaleAgentRS = new Route(currentRoute);

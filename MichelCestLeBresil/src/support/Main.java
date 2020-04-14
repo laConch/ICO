@@ -364,18 +364,17 @@ public class Main {
 							GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(route, populationSize,
 									numberGeneration, mutationRate, tournamentSelectionSize, numberEliteRoute);
 							
-							System.out.println(geneticAlgorithm.getPopulationSize());
-							System.out.println(route);
 							Population population = new Population(geneticAlgorithm, route, populationSize);
 							population.sortRoutesByFitness();
 
 							// Time just before starting the algorithm
 							long startTime = System.nanoTime();
-				
+							
 							for (int i = 0; i < numberGeneration; i++) {
 								population = geneticAlgorithm.evolve(population);
 								population.sortRoutesByFitness();
 							}
+							
 							long duration = System.nanoTime() - startTime;
 							Route bestRoute = population.getRoutes().get(0);
 							

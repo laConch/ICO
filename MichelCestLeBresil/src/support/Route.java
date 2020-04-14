@@ -52,7 +52,6 @@ public class Route implements Serializable{
 	 * @param indexStartCity
 	 */
 	public Route(ArrayList<City> cities) {
-		System.out.println("Cities Creation");
 		for (int i = 0; i < cities.size(); i++) {
 			this.cities.add(cities.get(i));
 		}

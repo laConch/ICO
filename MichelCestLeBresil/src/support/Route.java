@@ -1,5 +1,6 @@
 package support;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +10,7 @@ import algoMetaheuristique.GeneticAlgorithm;
 /**
  * Class representing a route
  */
-public class Route {
+public class Route implements Serializable{
 
 	private ArrayList<City> cities = new ArrayList<City>();
 	

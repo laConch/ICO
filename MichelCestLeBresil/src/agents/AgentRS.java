@@ -1,8 +1,10 @@
 package agents;
 
-import comportements.ComportementRS;
+import comportements.ComportementRSCollaboratif;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.SequentialBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import support.Route;
 
 public class AgentRS extends jade.core.Agent{
@@ -18,20 +20,13 @@ public class AgentRS extends jade.core.Agent{
 	public static int nbIterationMaxPerCycleAgentRS = 1000;
 	
 	protected void setup() {
-		SequentialBehaviour comportementSequentiel = new SequentialBehaviour();
-		comportementSequentiel.addSubBehaviour(new ComportementRS(this));
-		comportementSequentiel.addSubBehaviour(new OneShotBehaviour() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
 
-			public void action() {
-				System.out.println("La distance obtenue est de : " + routeOptimaleAgentRS.getTotalDistance());
-				routeOptimaleAgentRS.printCitiesNameOfRoute();
-				doDelete();
-			}
-		});
-		addBehaviour(comportementSequentiel);
+		System.out.println(this.getLocalName() + " is ready");
+		addBehaviour(new ComportementRSCollaboratif(this));
+		
+	}
+	
+	protected void takedown() {
+		System.out.println(this.getLocalName()+" is terminated");
 	}
 }

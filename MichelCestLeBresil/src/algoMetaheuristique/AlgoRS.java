@@ -51,7 +51,6 @@ public class AlgoRS {
 				
 				if(currentRoute.getTotalDistance()<optimalRoute.getTotalDistance()) {
 					optimalRoute = new Route(currentRoute);
-					//System.out.println(Math.round(optimalRoute.getTotalDistance()));
 				}
 			}
 			temperature *= coefficientRefroidissement;
@@ -59,21 +58,5 @@ public class AlgoRS {
 		return optimalRoute;
 	}
 	
-	private static double[] gaussian(double mean, double sigma){
-		double x1, x2, w, y1, y2;
-		double[] result = new double[2];
-		do {
-			x1 = 2.0 * (Math.random()) - 1.0;
-			x2 = 2.0 * (Math.random()) - 1.0;
-			w = x1 * x1 + x2 * x2;
-		}
-		while (w >= 1.0 || w == 0);
-		w = Math.sqrt(-2.0 * Math.log(w)/w);
-		y1 = x1 * w;
-		y2 = x2 * w;
-		result[0] = mean + y1 * sigma;
-		result[1] = mean + y2 * sigma;
-		return result;
-	}
 	
 }

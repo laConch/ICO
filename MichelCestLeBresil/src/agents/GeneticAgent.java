@@ -24,15 +24,17 @@ public class GeneticAgent extends Agent {
 	private static final long serialVersionUID = 1L;
 
 	protected void setup() {
-		yellowPagesRegistration();
-		
+		//yellowPagesRegistration();
+		System.out.println(this.getLocalName() + " is ready");
 		// Adding a behavior
+		/*
 		ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
 		addBehaviour(parallelBehaviour);
 		
 		GeneticBehaviour behaviour1 = new GeneticBehaviour(receive());
 		parallelBehaviour.addSubBehaviour(behaviour1);
 		send(behaviour1.response);	
+		*/
 	}
 	
 

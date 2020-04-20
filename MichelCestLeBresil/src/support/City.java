@@ -1,10 +1,12 @@
 package support;
 
+import java.io.Serializable;
+
 /**
  * Class representing a City
  * 
  */
-public class City {
+public class City implements Serializable{
 
 	// Constants
 	private static final double EARTH_EQUATORIAL_RADIUS = 6378.1370D;

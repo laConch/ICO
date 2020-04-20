@@ -5,6 +5,7 @@ import jade.core.Runtime;
 import jade.util.ExtendedProperties;
 import jade.util.leap.Properties;
 import jade.wrapper.AgentContainer;
+import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
 
 /**
@@ -29,6 +30,16 @@ public class MainContainer {
 			
 			// Launch the agent
 			mainContainer.start();
+			
+			// Creation of the RS agentRS
+			AgentController agentRS;
+			agentRS = mainContainer.createNewAgent("AgentRS", "agents.AgentRS", null);
+			agentRS.start();
+			
+			// Creation of the AG agentAG
+			AgentController agentAG;
+			agentAG = mainContainer.createNewAgent("agentAG", "agents.GeneticAgent", null);
+			agentAG.start();
 			
 		} catch (ControllerException e) {
 			e.printStackTrace();

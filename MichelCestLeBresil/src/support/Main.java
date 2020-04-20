@@ -30,9 +30,11 @@ public class Main {
 	public static String countryOfCities = "WORLD";
 
 	/*
-	 * Parameters for the RS Agent
+	 * Parameters for AgentRS
 	 */
 	public static Route routeInitialeAgentRS;
+	public static int nbIterationsMaxSansAmelioration = 0;
+	
 
 	/*
 	 * Parameters to test the RS algorithm
@@ -55,12 +57,12 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// lancerAgentRS();
-		testerAlgorithmeRS();
+		lancerAgents();
+		//testerAlgorithmeRS();
 		// excuteGenetic();
 	}
 	
-	public static void lancerAgentRS() {
+	public static void lancerAgents() {
 		// Initialization of the initial road
 		// routeInitialeAgentRS = new Route(initialisationBasique());
 		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
@@ -74,11 +76,19 @@ public class Main {
 		// Creation of the main container
 		AgentContainer mc = rt.createMainContainer(pMain);
 
-		// Creation of the RS agentRS
+		// Creation of agents
 		AgentController agentRS;
+		AgentController agentAG;
+		//AgentController agentTabou;
 		try {
+			agentAG = mc.createNewAgent("agentAG", "agents.GeneticAgent", null);
+			agentAG.start();
 			agentRS = mc.createNewAgent("AgentRS", "agents.AgentRS", null);
 			agentRS.start();
+			/*
+			agentTabou = mc.createNewAgent("AgentTabou", "agents.AgentTabou", null);
+			agentTabou.start();
+			*/
 		} catch (StaleProxyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

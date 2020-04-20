@@ -5,4 +5,7 @@
 /errors/
 >>>>>>> First steps for writing in csv file
 /algoMetaheuristique/
+<<<<<<< HEAD
 /comportements/
+=======
+>>>>>>> modif des tests de genetic agent (avec boucle qui prend en compte l'amélioration ou non des solutions

@@ -69,6 +69,15 @@ public class Route {
 		geneticAlgorithm.getInitialRoute().forEach(x -> this.cities.add(null));
 	}
 	
+	/*
+	 * Consturctor with on existing Route and two Cities of this Route to swap
+	 */
+	public Route(Route route, int i, int j){
+		this(route);
+
+		Collections.swap(this.cities,i,j);
+	}
+	
 	/**
 	 * Return the total Distance of the Route
 	 * @return

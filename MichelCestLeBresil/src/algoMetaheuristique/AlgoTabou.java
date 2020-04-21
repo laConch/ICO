@@ -1,6 +1,6 @@
 package algoMetaheuristique;
 
-import static java.lang.String.format;
+//import static java.lang.String.format;
 import java.util.ArrayList;
 import support.City;
 import support.Route;

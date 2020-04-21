@@ -36,9 +36,14 @@ public class Main {
 	public static Route routeInitialeAgentRS;
 	public static int nbIterationsMaxSansAmelioration = 0;
 	
+	/*
+	 * Initial route for Tabou Algorithm 
+	 */
+	public static Route routeOptimaleTabou;
+	
 
 	/*
-	 * Parameters to test the RS algorithm
+	 * Parameters to test the RS algorithm and the Tabou algorithm
 	 */
 	// 6 < nbOfCitiesMin < 15494
 	public static final int nbOfCitiesMin = 10;
@@ -70,6 +75,7 @@ public class Main {
 		// Initialization of the initial road
 		// routeInitialeAgentRS = new Route(initialisationBasique());
 		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
+		routeOptimaleTabou = new Route(initialisationComplexe(countryOfCities));
 
 		// Creation of an instance of the Jade environment
 		jade.core.Runtime rt = jade.core.Runtime.instance();
@@ -83,16 +89,15 @@ public class Main {
 		// Creation of agents
 		AgentController agentRS;
 		AgentController agentAG;
+		AgentController agentTabou;
 		//AgentController agentTabou;
 		try {
 			agentAG = mc.createNewAgent("agentAG", "agents.GeneticAgent", null);
 			agentAG.start();
 			agentRS = mc.createNewAgent("AgentRS", "agents.AgentRS", null);
 			agentRS.start();
-			/*
 			agentTabou = mc.createNewAgent("AgentTabou", "agents.AgentTabou", null);
 			agentTabou.start();
-			*/
 		} catch (StaleProxyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -137,7 +142,7 @@ public class Main {
 	}
 	
 	/*
-	 * Tester l'algorithme Tabou
+	 * Test the Tabou algorithm
 	 */
 	public static void testerAlgorithmeTabou() {
 		int nbOfTestsRealised = 0;

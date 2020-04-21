@@ -41,6 +41,11 @@ public class MainContainer {
 			agentAG = mainContainer.createNewAgent("agentAG", "agents.GeneticAgent", null);
 			agentAG.start();
 			
+			//Creation of the Tabou agentTabou
+			AgentController agentTabou;
+			agentTabou = mainContainer.createNewAgent("agentTabou", "agents.AgentTabou", null);
+			agentTabou.start();
+			
 		} catch (ControllerException e) {
 			e.printStackTrace();
 		}

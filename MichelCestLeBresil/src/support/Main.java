@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import algoMetaheuristique.AlgoRS;
+import algoMetaheuristique.AlgoTabou;
 import algoMetaheuristique.GeneticAlgorithm;
 import algoMetaheuristique.Population;
 import jade.core.ProfileImpl;
@@ -33,21 +34,27 @@ public class Main {
 	 * Parameters for AgentRS
 	 */
 	public static Route routeInitialeAgentRS;
-	public static int nbIterationsMaxSansAmelioration = 0;
+	public static int nbIterationsMaxSansAmelioration = 10;
 	
+	/*
+	 * Initial route for Tabou Algorithm 
+	 */
+	public static Route routeOptimaleTabou;
 
 	/*
-	 * Parameters to test the RS algorithm
+	 * Parameters to test the RS algorithm and the Tabou algorithm
 	 */
 	// 6 < nbOfCitiesMin < 15494
 	public static final int nbOfCitiesMin = 10;
 	// nbOfCitiesMax > nbOfCitiesMin
-	public static final int nbOfCitiesMax = 100;
+	public static final int nbOfCitiesMax = 10;
 	// stepNbOfCities > 0
 	public static final int stepNbOfCities = 10;
 	public static final int nbOfTestsPerNbOfCities = 5;
 	public static Double[] coefficientRefroidissementList = new Double[] { 0.98 };
 	public static int[] nbIterationMaxPerCycleList = new int[] { 1000 };
+	public static int[] tabouListSizeList = new int[] {10};
+	public static int[] nbIterationTabouList = new int[] { 50 };
 	public static final String csvColumnDelimeter = ",";
 	public static final String csvRowDelimeter = "\n";
 	
@@ -59,7 +66,8 @@ public class Main {
 	public static void main(String[] args) {
 		lancerAgents();
 		//testerAlgorithmeRS();
-		// excuteGenetic();
+		// executeGenetic();
+		//testerAlgorithmeTabou();
 	}
 	
 	public static void lancerAgents() {
@@ -79,16 +87,14 @@ public class Main {
 		// Creation of agents
 		AgentController agentRS;
 		AgentController agentAG;
-		//AgentController agentTabou;
+		AgentController agentTabou;
 		try {
 			agentAG = mc.createNewAgent("agentAG", "agents.GeneticAgent", null);
 			agentAG.start();
 			agentRS = mc.createNewAgent("AgentRS", "agents.AgentRS", null);
 			agentRS.start();
-			/*
 			agentTabou = mc.createNewAgent("AgentTabou", "agents.AgentTabou", null);
 			agentTabou.start();
-			*/
 		} catch (StaleProxyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,6 +137,45 @@ public class Main {
 		}
 		writeOptimateResultInCSVFileCourbesComparaison(header, contentToWrite);
 	}
+	
+	/*
+	 * Test the Tabou algorithm
+	 */
+	public static void testerAlgorithmeTabou() {
+		int nbOfTestsRealised = 0;
+		String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
+				+ csvColumnDelimeter + "Duration (in ms)" + csvColumnDelimeter + "Taille liste Tabou" + csvColumnDelimeter
+				+ "Nb itération sans changement" + csvRowDelimeter;
+		String contentToWrite = "";
+		for (int i =nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
+			nbOfCities = i;
+			for (int j : tabouListSizeList) {
+				for (int k : nbIterationTabouList) {
+					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
+						// Initialise the route with one of the two methods
+						// Route initialRoute = new Route(initalisationBasique(),0);
+						Route initialRoute = new Route(initialisationComplexe(countryOfCities));
+
+						// Calculate the optimal route with the Recuit Simule Algorithm and calculate
+						// the duration of the method
+						long startTime = System.nanoTime();
+						Route optimalRoute = AlgoTabou.optiTS(initialRoute, k, j);
+						long endTime = System.nanoTime();
+						long duration = (endTime - startTime);
+
+						// Add the relative information of the test to the content to write
+						contentToWrite += i + csvColumnDelimeter + optimalRoute.getTotalDistance() + csvColumnDelimeter
+								+ optimalRoute.citiesNameOfRoute() + csvColumnDelimeter
+								+ Long.toString(Math.round(duration / 1000000)) + csvColumnDelimeter + j + csvColumnDelimeter + k
+								+ csvRowDelimeter;
+					}
+					System.out.println(i + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter);
+				}
+			}
+		}
+		writeOptimateResultInCSVFileCourbesComparaison(header, contentToWrite);
+	}
+	
 	
 	/**
 	 * Execute the genetic algorithm and print the results. 

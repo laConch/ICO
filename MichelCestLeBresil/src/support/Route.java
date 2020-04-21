@@ -70,6 +70,17 @@ public class Route implements Serializable{
 		geneticAlgorithm.getInitialRoute().forEach(x -> this.cities.add(null));
 	}
 	
+	/*
+	 * Constructor for Tabou Algorithm
+	 * Clone an existing Route but swap the cities wich indice are i and j
+	 */
+	public Route(Route route, int i, int j){
+		this(route);
+
+		Collections.swap(this.cities,i,j);
+	}
+	
+	
 	/**
 	 * Return the total Distance of the Route
 	 * @return

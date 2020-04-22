@@ -1,4 +1,4 @@
-package algoMetaheuristique;
+package metaheuristiques;
 import support.Route;
 
 import java.util.Collections;

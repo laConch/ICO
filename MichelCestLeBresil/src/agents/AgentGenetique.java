@@ -32,7 +32,7 @@ public class AgentGenetique extends Agent {
 		addBehaviour(new GeneticCollaborative(this));
 	}
 
-	protected void takedown() {
+	protected void takeDown() {
 		System.out.println(this.getLocalName() + " is terminated");
 	}
 }

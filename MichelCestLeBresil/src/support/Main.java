@@ -22,7 +22,7 @@ public class Main {
 	 * Parameters for the complex initialization
 	 */
 	// 2 < nbOfCities < 15494
-	public static int nbOfCities = 100;
+	public static int nbOfCities = 50;
 	// "WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United
 	// Kingdom, "USA" for United States, "RUS" for Russia
 	public static String countryOfCities = "WORLD";
@@ -36,11 +36,12 @@ public class Main {
 	 * Parameters for AgentRS
 	 */
 	public static Route routeInitialeAgentRS;
-	public static int nbIterationsMaxSansAmelioration = 10;
+	public static int nbIterationsMaxSansAmelioration = 3;
 	
 	/*
 	 * Initial route for Tabou Algorithm 
 	 */
+	public static Route routeInitialeAgentTabou;
 	public static Route routeOptimaleTabou;
 
 	/*
@@ -92,6 +93,8 @@ public class Main {
 
 		// Initialization of the initial road
 		initialRouteCollaborative = new Route(initialisationComplexe(countryOfCities));
+		routeInitialeAgentRS = new Route(initialRouteCollaborative);
+		routeInitialeAgentTabou = new Route(initialRouteCollaborative);
 		MainContainer.main(null);
 	}
 	

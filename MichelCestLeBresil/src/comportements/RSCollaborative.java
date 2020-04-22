@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import agents.AgentRS;
+import agents.AgentTabou;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
@@ -40,9 +41,9 @@ public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 		// found before
 		case 0:
 			
-			Route currentRoute = new Route(Main.initialRouteCollaborative);
-			Route searchedRoute = new Route(Main.initialRouteCollaborative);
-			AgentRS.routeOptimaleAgentRS = new Route(Main.initialRouteCollaborative);
+			Route currentRoute = new Route(Main.routeInitialeAgentRS);
+			Route searchedRoute = new Route(Main.routeInitialeAgentRS);
+			AgentRS.routeOptimaleAgentRS = new Route(Main.routeInitialeAgentRS);
 			double coefficientRefroidissement = AgentRS.coefficientRefroidissementAgentRS;
 			int nbIterationMaxPerCycle = AgentRS.nbIterationMaxPerCycleAgentRS;
 
@@ -83,6 +84,8 @@ public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 				temperature *= coefficientRefroidissement;
 			}
 			routes.add(AgentRS.routeOptimaleAgentRS);
+			System.out.println("Route de l'agentRS :");
+			AgentRS.routeOptimaleAgentRS.printCitiesNameOfRoute();
 			step = 1;
 			break;
 
@@ -130,9 +133,12 @@ public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 		// Compare solutions, and keep the best one to start again the process
 		case 3:
 
-			Main.initialRouteCollaborative = new Route(
+			Main.routeInitialeAgentRS = new Route(
 					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
-			double score = Main.initialRouteCollaborative.getTotalDistance();
+			double score = Main.routeInitialeAgentRS.getTotalDistance();
+			System.out.println();
+			System.out.println("Score de la route donnée par : " +myAgent.getLocalName()+" "+score);
+			System.out.println();
 			// Stop condition
 			if (bestScore == 0 || score < bestScore) {
 				bestScore = score;

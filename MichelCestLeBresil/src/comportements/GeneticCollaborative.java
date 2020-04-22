@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import agents.AgentTabou;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -70,7 +71,8 @@ public class GeneticCollaborative extends CyclicBehaviour {
 			
 			// Select the best result
 			routes.add(population.getRoutes().get(0));
-			
+			System.out.println("Route de l'agent Génétique :");
+			population.getRoutes().get(0).printCitiesNameOfRoute();
 			step = 1;
 			break;
 			

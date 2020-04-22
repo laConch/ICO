@@ -27,7 +27,7 @@ public class AgentTabou extends jade.core.Agent {
 
 	}
 
-	protected void takedown() {
+	protected void takeDown() {
 		System.out.println(this.getLocalName() + " is terminated");
 	}
 }

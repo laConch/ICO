@@ -41,12 +41,14 @@ public class TabouCollaborative extends jade.core.behaviours.CyclicBehaviour {
 		// before
 		case 0:
 
-			Route routeInitiale = new Route(Main.initialRouteCollaborative);
+			Route routeInitiale = new Route(Main.routeInitialeAgentTabou);
 			int nbIterationsTabou = AgentTabou.nbIterationSansAmelioration;
 			int tailleListeTabou = AgentTabou.tailleListeTabou;
 
 			AgentTabou.routeOptimaleAgentTabou = AlgoTabou.optiTS(routeInitiale, nbIterationsTabou, tailleListeTabou);
-
+			System.out.println("Route de l'agent Tabou :");
+			AgentTabou.routeOptimaleAgentTabou.printCitiesNameOfRoute();
+			
 			routes.add(AgentTabou.routeOptimaleAgentTabou);
 			step = 1;
 			break;
@@ -95,9 +97,10 @@ public class TabouCollaborative extends jade.core.behaviours.CyclicBehaviour {
 		// Compare solutions, and keep the best one to start again the process
 		case 3:
 
-			Main.initialRouteCollaborative = new Route(
+			Main.routeInitialeAgentTabou = new Route(
 					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
-			double score = Main.initialRouteCollaborative.getTotalDistance();
+			double score = Main.routeInitialeAgentTabou.getTotalDistance();
+			System.out.println("Score de la route donnée par :" +myAgent.getLocalName()+score);
 			// Stop condition
 			if (bestScore == 0 || score < bestScore) {
 				bestScore = score;
@@ -106,6 +109,7 @@ public class TabouCollaborative extends jade.core.behaviours.CyclicBehaviour {
 				nbIterations++;
 			}
 			if (nbIterations == Main.nbIterationsMaxSansAmelioration) {
+				
 				myAgent.doDelete();
 			}
 

@@ -7,13 +7,19 @@ import support.City;
 import support.Route;
 
 /**
- * This class represents a population
+ * <p>
+ * This class represents a population for the genetic algorithm</br>
+ * A population is an array of routes specific to a certain geneticAlgorithm
+ * (populationSize)
+ * </p>
  * 
  * By Sethian & Bouzereau 3/18/2020
  */
 public class Population {
+	
+	public AlgoGenetique geneticAlgorithm;
 
-	private ArrayList<Route> routes = new ArrayList<Route>(AlgoGenetique.POPULATION_SIZE);
+	private ArrayList<Route> routes;
 
 	// Getter
 	public ArrayList<Route> getRoutes() {
@@ -35,14 +41,31 @@ public class Population {
 	}
 
 	/**
-	 * Constructor
+	 * <p>
+	 * Constructor<br />
+	 * We have to add the argument <i>populationSize</i> because it will not always
+	 * be the same as <i>geneticAlgorithm.populationSize</i> for example when
+	 * creating the tournament population.
+	 * </p>
+	 * 
+	 * @param geneticAlgorithm
+	 * @param cities
 	 */
-	public Population(int populationSize, ArrayList<City> cities) {
-		IntStream.range(0, populationSize).forEach(x -> routes.add(new Route(cities)));
+	public Population(AlgoGenetique geneticAlgorithm, ArrayList<City> cities, int populationSize) {
+		this.geneticAlgorithm = geneticAlgorithm;
+		this.routes = new ArrayList<Route>(populationSize);
+		IntStream.range(0, populationSize).forEach(x -> this.routes.add(new Route(cities)));
 	}
 
-	public Population(int populationSize, AlgoGenetique geneticAlgorithm) {
-		IntStream.range(0, populationSize).forEach(
-				x -> routes.add(new Route(geneticAlgorithm.getInitialRoute())));
+	/**
+	 * Constructor
+	 * 
+	 * @param geneticAlgorithm
+	 */
+	public Population(AlgoGenetique geneticAlgorithm) {
+		this.geneticAlgorithm = geneticAlgorithm;
+		this.routes = new ArrayList<Route>(geneticAlgorithm.getPopulationSize());
+		IntStream.range(0, geneticAlgorithm.getPopulationSize())
+				.forEach(x -> this.routes.add(new Route(geneticAlgorithm.getInitialRoute())));
 	}
 }

@@ -21,9 +21,13 @@ public class Population {
 
 	private ArrayList<Route> routes;
 
-	// Getter
+	// Getters
 	public ArrayList<Route> getRoutes() {
 		return routes;
+	}
+	
+	public AlgoGenetique getGeneticAlgorithm() {
+		return geneticAlgorithm;
 	}
 
 	/**
@@ -67,5 +71,24 @@ public class Population {
 		this.routes = new ArrayList<Route>(geneticAlgorithm.getPopulationSize());
 		IntStream.range(0, geneticAlgorithm.getPopulationSize())
 				.forEach(x -> this.routes.add(new Route(geneticAlgorithm.getInitialRoute())));
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param initialPopualation
+	 * @param route              : to add in the initialPopulation
+	 */
+	public Population(Population initialPopulation, Route route) {
+		this.geneticAlgorithm = initialPopulation.getGeneticAlgorithm();
+		
+		// Sort the population
+		initialPopulation.sortRoutesByFitness();
+		ArrayList<Route> newRoutes = initialPopulation.getRoutes();
+		// Remove the worse route
+		newRoutes.remove(newRoutes.size() -1);
+		// Add the route given in parameter
+		newRoutes.add(route);
+		this.routes = newRoutes;
 	}
 }

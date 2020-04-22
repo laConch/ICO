@@ -3,10 +3,6 @@ package support;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import jade.core.ProfileImpl;
-import jade.wrapper.AgentContainer;
-import jade.wrapper.AgentController;
-import jade.wrapper.StaleProxyException;
 import metaheuristiques.AlgoRS;
 import metaheuristiques.AlgoTabou;
 import metaheuristiques.AlgoGenetique;
@@ -85,34 +81,13 @@ public class Main {
 	}
 	
 	public static void lancerAgents() {
+		System.out.println("test1");
+		
 		// Initialization of the initial road
 		// routeInitialeAgentRS = new Route(initialisationBasique());
 		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
 
-		// Creation of an instance of the Jade environment
-		jade.core.Runtime rt = jade.core.Runtime.instance();
-
-		// Creation of a default Container profile in order to launch the platform
-		ProfileImpl pMain = new ProfileImpl();
-
-		// Creation of the main container
-		AgentContainer mc = rt.createMainContainer(pMain);
-
-		// Creation of agents
-		AgentController agentRS;
-		AgentController agentAG;
-		AgentController agentTabou;
-		try {
-			agentAG = mc.createNewAgent("agentAG", "agents.GeneticAgent", null);
-			agentAG.start();
-			agentRS = mc.createNewAgent("AgentRS", "agents.AgentRS", null);
-			agentRS.start();
-			agentTabou = mc.createNewAgent("AgentTabou", "agents.AgentTabou", null);
-			agentTabou.start();
-		} catch (StaleProxyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		MainContainer.main(null);
 	}
 	
 	public static void testerAlgorithmeRS() {

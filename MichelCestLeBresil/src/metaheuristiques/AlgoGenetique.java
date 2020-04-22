@@ -134,7 +134,7 @@ public class AlgoGenetique {
 	 * @return after crossover Population
 	 */
 	private Population crossoverPopulation(Population population) {
-		Population crossoverPopulation = new Population(population.getRoutes().size(), this);
+		Population crossoverPopulation = new Population(this);
 		IntStream.range(0, numberEliteRoute)
 				.forEach(x -> crossoverPopulation.getRoutes().set(x, population.getRoutes().get(x)));
 
@@ -193,7 +193,7 @@ public class AlgoGenetique {
 	 * @return the tournament Population sorted by fitness
 	 */
 	private Population selectTournamentPopulation(Population population) {
-		Population tournamentPopulation = new Population(tournamentSelectionSize, this);
+		Population tournamentPopulation = new Population(this, population.getRoutes().get(0).getCities(), this.tournamentSelectionSize);
 		IntStream.range(0, tournamentSelectionSize).forEach(x -> tournamentPopulation.getRoutes().set(x,
 				population.getRoutes().get((int) (Math.random() * population.getRoutes().size()))));
 		tournamentPopulation.sortRoutesByFitness();

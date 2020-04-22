@@ -7,11 +7,11 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import agents.AgentTabou;
-import algoMetaheuristique.AlgoTabou;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+import metaheuristiques.AlgoTabou;
 import support.Main;
 import support.Route;
 

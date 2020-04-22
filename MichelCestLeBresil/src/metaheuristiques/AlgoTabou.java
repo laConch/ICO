@@ -1,4 +1,4 @@
-package algoMetaheuristique;
+package metaheuristiques;
 
 //import static java.lang.String.format;
 import java.util.ArrayList;

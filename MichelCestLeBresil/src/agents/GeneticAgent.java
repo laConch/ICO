@@ -22,6 +22,8 @@ public class GeneticAgent extends Agent {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	
 
 	protected void setup() {
 		//yellowPagesRegistration();

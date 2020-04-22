@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import algoMetaheuristique.GeneticAlgorithm;
+import metaheuristiques.AlgoGenetique;
 
 /**
  * Class representing a route
@@ -66,7 +66,7 @@ public class Route implements Serializable{
 	 * @param geneticAlgorithm
 	 */
 	// TODO change lenght instead o=f geneticAlgortim as parameter
-	public Route(GeneticAlgorithm geneticAlgorithm) {
+	public Route(AlgoGenetique geneticAlgorithm) {
 		geneticAlgorithm.getInitialRoute().forEach(x -> this.cities.add(null));
 	}
 	

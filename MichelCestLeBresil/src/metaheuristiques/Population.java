@@ -1,4 +1,4 @@
-package algoMetaheuristique;
+package metaheuristiques;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;
@@ -13,7 +13,7 @@ import support.Route;
  */
 public class Population {
 
-	private ArrayList<Route> routes = new ArrayList<Route>(GeneticAlgorithm.POPULATION_SIZE);
+	private ArrayList<Route> routes = new ArrayList<Route>(AlgoGenetique.POPULATION_SIZE);
 
 	// Getter
 	public ArrayList<Route> getRoutes() {
@@ -41,7 +41,7 @@ public class Population {
 		IntStream.range(0, populationSize).forEach(x -> routes.add(new Route(cities)));
 	}
 
-	public Population(int populationSize, GeneticAlgorithm geneticAlgorithm) {
+	public Population(int populationSize, AlgoGenetique geneticAlgorithm) {
 		IntStream.range(0, populationSize).forEach(
 				x -> routes.add(new Route(geneticAlgorithm.getInitialRoute())));
 	}

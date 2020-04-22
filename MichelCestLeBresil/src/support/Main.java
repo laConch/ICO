@@ -3,14 +3,15 @@ package support;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import algoMetaheuristique.AlgoRS;
-import algoMetaheuristique.AlgoTabou;
-import algoMetaheuristique.GeneticAlgorithm;
-import algoMetaheuristique.Population;
 import jade.core.ProfileImpl;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
+import metaheuristiques.AlgoRS;
+import metaheuristiques.AlgoTabou;
+import metaheuristiques.AlgoGenetique;
+import metaheuristiques.Population;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -184,17 +185,17 @@ public class Main {
 		Main driver = new Main();
 		
 //		Population population = new Population(GeneticAlgorithm.POPULATION_SIZE, driver.initialRoute);
-		Population population = new Population(GeneticAlgorithm.POPULATION_SIZE, initialisationComplexe("FRA"));
+		Population population = new Population(AlgoGenetique.POPULATION_SIZE, initialisationComplexe("FRA"));
 		
 		population.sortRoutesByFitness();
 		
 //		GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(driver.initialRoute);
-		GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(initialisationComplexe("FRA"));
+		AlgoGenetique geneticAlgorithm = new AlgoGenetique(initialisationComplexe("FRA"));
 		
 		int generationNumber = 0;
 		driver.printHeading(generationNumber++);
 		driver.printPopulation(population);
-		while (generationNumber < GeneticAlgorithm.NUMBER_GENERATION) {
+		while (generationNumber < AlgoGenetique.NUMBER_GENERATION) {
 			driver.printHeading(generationNumber++);
 			population = geneticAlgorithm.evolve(population);
 			population.sortRoutesByFitness();

@@ -3,6 +3,7 @@ package metaheuristiques;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
+import errors.GeneticCreationException;
 import support.City;
 import support.Route;
 

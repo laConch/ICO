@@ -12,6 +12,11 @@ import metaheuristiques.AlgoGenetique;
  */
 public class Route implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private ArrayList<City> cities = new ArrayList<City>();
 	
 	// Parameters for the genetic algorithm. Fitness is the parameter we try to

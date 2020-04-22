@@ -1,6 +1,6 @@
 package agents;
 
-import comportements.GeneticCollaboratif;
+import comportements.GeneticCollaborative;
 import jade.core.Agent;
 
 /**
@@ -29,7 +29,7 @@ public class AgentGenetique extends Agent {
 
 	protected void setup() {
 		System.out.println(this.getLocalName() + " is ready");
-		addBehaviour(new GeneticCollaboratif(this));
+		addBehaviour(new GeneticCollaborative(this));
 	}
 
 	protected void takedown() {

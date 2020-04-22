@@ -1,6 +1,6 @@
 package agents;
 
-import comportements.TabouCollaboratif;
+import comportements.TabouCollaborative;
 /*
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
@@ -23,7 +23,7 @@ public class AgentTabou extends jade.core.Agent {
 	protected void setup() {
 
 		System.out.println(this.getLocalName() + " is ready");
-		addBehaviour(new TabouCollaboratif(this));
+		addBehaviour(new TabouCollaborative(this));
 
 	}
 

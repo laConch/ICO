@@ -26,6 +26,11 @@ public class Main {
 	// "WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United
 	// Kingdom, "USA" for United States, "RUS" for Russia
 	public static String countryOfCities = "WORLD";
+	
+	/*
+	 * Parameters for the three agents
+	 */
+	public static Route initialRouteCollaborative;
 
 	/*
 	 * Parameters for AgentRS
@@ -75,18 +80,18 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		lancerAgents();
-		//testerAlgorithmeRS();
-		//executeGenetic();
-		//testerAlgorithmeTabou();
 	}
 	
+	/**
+	 * Launch the mainContainer which contains the three agents
+	 */
 	public static void lancerAgents() {
-		System.out.println("test1");
-		
 		// Initialization of the initial road
 		// routeInitialeAgentRS = new Route(initialisationBasique());
-		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
+		// routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
 
+		// Initialization of the initial road
+		initialRouteCollaborative = new Route(initialisationComplexe(countryOfCities));
 		MainContainer.main(null);
 	}
 	

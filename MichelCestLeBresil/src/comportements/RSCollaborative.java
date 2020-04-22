@@ -14,14 +14,14 @@ import jade.lang.acl.UnreadableException;
 import support.Main;
 import support.Route;
 
-public class RSCollaboratif extends jade.core.behaviours.CyclicBehaviour {
+public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public RSCollaboratif(Agent a) {
+	public RSCollaborative(Agent a) {
 		super(a);
 	}
 
@@ -33,16 +33,16 @@ public class RSCollaboratif extends jade.core.behaviours.CyclicBehaviour {
 
 	@Override
 	public void action() {
-		// Initialisation des paramètres de l'algorithme
+		// Initialization of the parameters of the algorithm
 
 		switch (step) {
+		// Execution of the Recuit Simule algorithm with as a start the best solution
+		// found before
 		case 0:
-			// Execution of the Recuit Simule algorithm with as a start the best solution
-			// found before
-
-			Route currentRoute = new Route(Main.routeInitialeAgentRS);
-			Route searchedRoute = new Route(Main.routeInitialeAgentRS);
-			AgentRS.routeOptimaleAgentRS = new Route(Main.routeInitialeAgentRS);
+			
+			Route currentRoute = new Route(Main.initialRouteCollaborative);
+			Route searchedRoute = new Route(Main.initialRouteCollaborative);
+			AgentRS.routeOptimaleAgentRS = new Route(Main.initialRouteCollaborative);
 			double coefficientRefroidissement = AgentRS.coefficientRefroidissementAgentRS;
 			int nbIterationMaxPerCycle = AgentRS.nbIterationMaxPerCycleAgentRS;
 
@@ -86,31 +86,29 @@ public class RSCollaboratif extends jade.core.behaviours.CyclicBehaviour {
 			step = 1;
 			break;
 
+		// Send solution to the other agents
 		case 1:
 
-			// Send solution to the other agents
-
 			ACLMessage mes = new ACLMessage(ACLMessage.INFORM);
-			mes.addReceiver(new AID("AgentAG", AID.ISLOCALNAME));
-			mes.addReceiver(new AID("AgentTabou", AID.ISLOCALNAME));
+			mes.addReceiver(new AID("agentGenetique", AID.ISLOCALNAME));
+			mes.addReceiver(new AID("agentTabou", AID.ISLOCALNAME));
 			try {
 				mes.setContentObject((Serializable) AgentRS.routeOptimaleAgentRS);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			myAgent.send(mes);
-			System.out.println(myAgent.getLocalName() + "sends road to AgentAG and AgentTabou");
+			System.out.println(myAgent.getLocalName() + " sends road to agentGenetique and agentTabou");
 			step = 2;
 			break;
 
+		// Receive other agents solution
 		case 2:
-
-			// Receive other agents solution
 
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				try {
-					System.out.println(myAgent.getLocalName() + "receives road from " + reply.getSender().getName());
+					System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getName());
 					routes.add((Route) reply.getContentObject());
 				} catch (UnreadableException e) {
 					// TODO Auto-generated catch block
@@ -129,13 +127,12 @@ public class RSCollaboratif extends jade.core.behaviours.CyclicBehaviour {
 
 			break;
 
+		// Compare solutions, and keep the best one to start again the process
 		case 3:
 
-			// Compare solutions, and keep the best one to start again the process
-
-			Main.routeInitialeAgentRS = new Route(
+			Main.initialRouteCollaborative = new Route(
 					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
-			double score = Main.routeInitialeAgentRS.getTotalDistance();
+			double score = Main.initialRouteCollaborative.getTotalDistance();
 			// Stop condition
 			if (bestScore == 0 || score < bestScore) {
 				bestScore = score;

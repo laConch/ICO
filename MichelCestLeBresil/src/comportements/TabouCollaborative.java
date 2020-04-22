@@ -15,14 +15,14 @@ import metaheuristiques.AlgoTabou;
 import support.Main;
 import support.Route;
 
-public class TabouCollaboratif extends jade.core.behaviours.CyclicBehaviour {
+public class TabouCollaborative extends jade.core.behaviours.CyclicBehaviour {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public TabouCollaboratif(Agent a) {
+	public TabouCollaborative(Agent a) {
 		super(a);
 	}
 
@@ -34,13 +34,14 @@ public class TabouCollaboratif extends jade.core.behaviours.CyclicBehaviour {
 
 	@Override
 	public void action() {
-		// Initialisation des paramètres de l'algorithme
+		// Initialization of the parameters of the algorithm
 
 		switch (step) {
+		// Execution of the Tabou algorithm with as a start the best solution found
+		// before
 		case 0:
-			// Execution of the Tabou algorithm with as a start the best solution found
-			// before
-			Route routeInitiale = Main.routeOptimaleTabou;
+
+			Route routeInitiale = new Route(Main.initialRouteCollaborative);
 			int nbIterationsTabou = AgentTabou.nbIterationSansAmelioration;
 			int tailleListeTabou = AgentTabou.tailleListeTabou;
 
@@ -50,31 +51,29 @@ public class TabouCollaboratif extends jade.core.behaviours.CyclicBehaviour {
 			step = 1;
 			break;
 
+		// Send solution to the other agents
 		case 1:
 
-			// Send solution to the other agents
-
 			ACLMessage mes = new ACLMessage(ACLMessage.INFORM);
-			mes.addReceiver(new AID("AgentAG", AID.ISLOCALNAME));
-			mes.addReceiver(new AID("AgentRS", AID.ISLOCALNAME));
+			mes.addReceiver(new AID("agentGenetique", AID.ISLOCALNAME));
+			mes.addReceiver(new AID("agentRS", AID.ISLOCALNAME));
 			try {
 				mes.setContentObject((Serializable) AgentTabou.routeOptimaleAgentTabou);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			myAgent.send(mes);
-			System.out.println(myAgent.getLocalName() + "sends road to AgentAG and AgentRS");
+			System.out.println(myAgent.getLocalName() + " sends road to agentGenetique and agentRS");
 			step = 2;
 			break;
 
+		// Receive other agents solution
 		case 2:
-
-			// Receive other agents solution
 
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				try {
-					System.out.println(myAgent.getLocalName() + "receives road from " + reply.getSender().getName());
+					System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getName());
 					routes.add((Route) reply.getContentObject());
 				} catch (UnreadableException e) {
 					// TODO Auto-generated catch block
@@ -93,12 +92,12 @@ public class TabouCollaboratif extends jade.core.behaviours.CyclicBehaviour {
 
 			break;
 
+		// Compare solutions, and keep the best one to start again the process
 		case 3:
 
-			// Compare solutions, and keep the best one to start again the process
-
-			Main.routeOptimaleTabou = new Route(Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
-			double score = Main.routeOptimaleTabou.getTotalDistance();
+			Main.initialRouteCollaborative = new Route(
+					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
+			double score = Main.initialRouteCollaborative.getTotalDistance();
 			// Stop condition
 			if (bestScore == 0 || score < bestScore) {
 				bestScore = score;

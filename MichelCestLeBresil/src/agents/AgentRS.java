@@ -1,6 +1,6 @@
 package agents;
 
-import comportements.RSCollaboratif;
+import comportements.RSCollaborative;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.SequentialBehaviour;
@@ -21,7 +21,7 @@ public class AgentRS extends jade.core.Agent {
 	protected void setup() {
 
 		System.out.println(this.getLocalName() + " is ready");
-		addBehaviour(new RSCollaboratif(this));
+		addBehaviour(new RSCollaborative(this));
 
 	}
 

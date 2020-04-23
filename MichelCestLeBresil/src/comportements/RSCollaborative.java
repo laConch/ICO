@@ -83,7 +83,6 @@ public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 				temperature *= coefficientRefroidissement;
 			}
 			routes.add(AgentRS.routeOptimaleAgentRS);
-			System.out.println("Route de l'agentRS : " + AgentRS.routeOptimaleAgentRS);
 			step = 1;
 			break;
 
@@ -101,6 +100,12 @@ public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 			myAgent.send(mes);
 			System.out.println(myAgent.getLocalName() + " sends road to agentGenetique and agentTabou");
 			step = 2;
+			
+			System.out.println("------------------------------------------------------------------------------------");
+			System.out.println(myAgent.getLocalName() + " : " + AgentRS.routeOptimaleAgentRS.getTotalDistance());
+			//AgentRS.routeOptimaleAgentRS.printCitiesNameOfRoute();
+			System.out.println("------------------------------------------------------------------------------------");
+			
 			break;
 
 		// Receive other agents solution
@@ -109,9 +114,8 @@ public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				try {
-					System.out.println(
-							myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
-					routes.add((Route) reply.getContentObject());
+					System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					routes.add((Route) reply.getContentObject());					
 				} catch (UnreadableException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -132,9 +136,7 @@ public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 		// Compare solutions, and keep the best one to start again the process
 		case 3:
 			double score = Main.routeInitialeAgentRS.getTotalDistance();
-			System.out.println("Score de la route donnée par : " + myAgent.getLocalName() + " " + score);
-			Main.routeInitialeAgentRS = new Route(
-					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
+			Main.routeInitialeAgentRS = new Route(Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
 			score = Main.routeInitialeAgentRS.getTotalDistance();
 
 			// Stop condition

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import agents.AgentTabou;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -39,36 +40,32 @@ public class GeneticCollaborative extends CyclicBehaviour {
 	ArrayList<Route> routes = new ArrayList<Route>();
 	private double bestScore = 0;
 	private int nbIterations = 0;
-
-	AlgoGenetique geneticAlgorithm = new AlgoGenetique(Main.routeInitialeAgentGenetique.getCities());
-	// First Population randomly generated
-	Population population = new Population(geneticAlgorithm, Main.routeInitialeAgentGenetique.getCities(),
-			geneticAlgorithm.getPopulationSize());
-
+	
+	AlgoGenetique geneticAlgorithm;
+	Population population;
+	
 	@Override
 	public void action() {
 		switch (step) {
-		// First execution of the AlgoGenetique including the best solution of the
+		// Execution of the AlgoGenetique including the best solution of the
 		// previous cycle in the population
 		case 0:
-			System.out.println(String.format("Gen 1 : %s", Main.routeInitialeAgentGenetique));
-			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
-
+			
+			geneticAlgorithm = new AlgoGenetique(Main.routeInitialeAgentGenetique.getCities());
+			// Generate randomly the population
+			population = new Population(geneticAlgorithm, Main.routeInitialeAgentGenetique.getCities(),
+					geneticAlgorithm.getPopulationSize()-1);
 			// Add the best route of the previous cycle to the population
-			population = new Population(population, initialRoute);
+			population.getRoutes().add(new Route(Main.routeInitialeAgentGenetique));
 			population.sortRoutesByFitness();
 
-			System.out.println(String.format("Gen 2 : %s", population.getRoutes().get(0)));
 			for (int generation = 0; generation < geneticAlgorithm.getNumberGeneration(); generation++) {
 				population = geneticAlgorithm.evolve(population);
 				population.sortRoutesByFitness();
 			}
-			System.out.println(String.format("Gen 3 : %s", population.getRoutes().get(0)));
 
 			// Select the best result
 			routes.add(population.getRoutes().get(0));
-			System.out.println("Route de l'agent Génétique :");
-			population.getRoutes().get(0).printCitiesNameOfRoute();
 			step = 1;
 			break;
 
@@ -84,8 +81,13 @@ public class GeneticCollaborative extends CyclicBehaviour {
 				e.printStackTrace();
 			}
 			myAgent.send(message);
-			System.out.println(myAgent.getLocalName() + " sends road to agentRS and agentTabou");
 			step = 2;
+			
+			System.out.println("------------------------------------------------------------------------------------");
+			System.out.println(myAgent.getLocalName() + " : " + population.getRoutes().get(0).getTotalDistance());
+			//population.getRoutes().get(0).printCitiesNameOfRoute();
+			System.out.println("------------------------------------------------------------------------------------");
+			
 			break;
 
 		// Receive other agents solution
@@ -94,8 +96,7 @@ public class GeneticCollaborative extends CyclicBehaviour {
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				try {
-					System.out.println(
-							myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
 					routes.add((Route) reply.getContentObject());
 				} catch (UnreadableException e) {
 					e.printStackTrace();
@@ -115,11 +116,7 @@ public class GeneticCollaborative extends CyclicBehaviour {
 		// Compare solutions, and keep the best one to start again the process
 		case 3:
 			double score = Main.routeInitialeAgentGenetique.getTotalDistance();
-			System.out.println();
-			System.out.println("Score de la route donnée par : " + myAgent.getLocalName() + " " + score);
-			System.out.println();
-			Main.routeInitialeAgentGenetique = new Route(
-					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
+			Main.routeInitialeAgentGenetique = new Route(Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
 			score = Main.routeInitialeAgentGenetique.getTotalDistance();
 
 			// Stop condition

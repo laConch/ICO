@@ -2,6 +2,7 @@ package agents;
 
 import comportements.GeneticCollaborative;
 import jade.core.Agent;
+import support.Route;
 
 /**
  * Genetic Agent (daemon -> no graphical user interface)

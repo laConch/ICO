@@ -30,19 +30,11 @@ public class Main {
 	/*
 	 * Parameters for the three agents
 	 */
-	public static Route initialRouteCollaborative;
-
-	/*
-	 * Parameters for AgentRS
-	 */
-	public static Route routeInitialeAgentRS;
 	public static int nbIterationsMaxSansAmelioration = 3;
-	
-	/*
-	 * Initial route for Tabou Algorithm 
-	 */
+	public static Route routeInitialeAgentRS;
 	public static Route routeInitialeAgentTabou;
 	public static Route routeOptimaleTabou;
+	public static Route routeInitialeAgentGenetique;
 
 	/*
 	 * Parameters to test the RS algorithm and the Tabou algorithm
@@ -81,6 +73,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		lancerAgents();
+//		executeGenetic();
 	}
 	
 	/**
@@ -92,9 +85,9 @@ public class Main {
 		// routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
 
 		// Initialization of the initial road
-		initialRouteCollaborative = new Route(initialisationComplexe(countryOfCities));
-		routeInitialeAgentRS = new Route(initialRouteCollaborative);
-		routeInitialeAgentTabou = new Route(initialRouteCollaborative);
+		routeInitialeAgentGenetique = new Route(initialisationComplexe(countryOfCities));
+		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
+		routeInitialeAgentTabou = new Route(initialisationComplexe(countryOfCities));
 		MainContainer.main(null);
 	}
 	
@@ -177,26 +170,29 @@ public class Main {
 	 * Execute the genetic algorithm and print the results.
 	 */
 	public static void executeGenetic() {
-		//Main driver = new Main();
 
 //		ArrayList<City> route = initialisationBasique();
-		ArrayList<City> route = initialisationComplexe("FRA");
-
-		AlgoGenetique geneticAlgorithm = new AlgoGenetique(route);
-
-		// Random population
-		Population population = new Population(geneticAlgorithm, route, geneticAlgorithm.getPopulationSize());
-		population.sortRoutesByFitness();
-
-		int generationNumber = 0;
-		//driver.printHeading(generationNumber++);
-		//driver.printPopulation(population);
-
-		while (generationNumber < geneticAlgorithm.getNumberGeneration()) {
-			//driver.printHeading(generationNumber++);
+//		ArrayList<City> route = initialisationComplexe("FRA");
+		routeInitialeAgentGenetique = new Route(initialisationComplexe(countryOfCities));
+		
+		AlgoGenetique geneticAlgorithm = new AlgoGenetique(Main.routeInitialeAgentGenetique.getCities());
+		// First Population randomly generated
+		Population population = new Population(geneticAlgorithm, Main.routeInitialeAgentGenetique.getCities(),
+				geneticAlgorithm.getPopulationSize());
+		
+//		AlgoGenetique geneticAlgorithm = new AlgoGenetique(route);
+//
+//		// Random population
+//		Population population = new Population(geneticAlgorithm, route, geneticAlgorithm.getPopulationSize());
+//		population.sortRoutesByFitness();
+		
+		for (int generation = 0; generation < geneticAlgorithm.getNumberGeneration(); generation++) {
+			System.out.println(String.format("Generation number : %s", generation));
 			population = geneticAlgorithm.evolve(population);
 			population.sortRoutesByFitness();
-			//driver.printPopulation(population);
+			System.out.println(String.format("Size : %s", population.getRoutes().get(0).getCities().size()));
+			System.out.println(String.format("Popualtion : %s", population.getRoutes().get(0)));
+			System.out.println("---------------------------------------");
 		}
 	}
 	

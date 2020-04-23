@@ -3,10 +3,6 @@ package agents;
 import java.util.concurrent.TimeUnit;
 
 import comportements.RSCollaborative;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
-import jade.core.behaviours.SequentialBehaviour;
-import jade.core.behaviours.TickerBehaviour;
 import support.Main;
 import support.Route;
 
@@ -36,17 +32,18 @@ public class AgentRS extends jade.core.Agent {
 		System.out.println();
 		System.out.println("---------------------------------------");
 		System.out.println();
-		System.out.println("Solution trouvée en " + nanoSecDurationToStringInMinSecAndMilliSec(duration));
-		System.out.println("Score de la solution trouvée "+ Main.routeInitialeAgentRS.getTotalDistance());
+		System.out.println("Solution found in " + nanoSecDurationToStringInMinSecAndMilliSec(duration));
+		System.out.println("Score of the solution found " + Main.routeInitialeAgentRS.getTotalDistance());
 		Main.routeInitialeAgentRS.printCitiesNameOfRoute();
-		
 	}
-	
+
 	public static String nanoSecDurationToStringInMinSecAndMilliSec(long nanoSecDuration) {
 		long duration = nanoSecDuration;
 		long durationInMin = TimeUnit.MINUTES.convert(duration, TimeUnit.NANOSECONDS);
-		long durationInSec = TimeUnit.SECONDS.convert(duration, TimeUnit.NANOSECONDS)-durationInMin*60;
-		long durationInMilliSec = TimeUnit.MILLISECONDS.convert(duration, TimeUnit.NANOSECONDS)-durationInSec*1000-durationInMin*60*1000;
-		return Long.toString(durationInMin) + "mn : " + Long.toString(durationInSec) + "s : " + Long.toString(durationInMilliSec) + "ms";
+		long durationInSec = TimeUnit.SECONDS.convert(duration, TimeUnit.NANOSECONDS) - durationInMin * 60;
+		long durationInMilliSec = TimeUnit.MILLISECONDS.convert(duration, TimeUnit.NANOSECONDS) - durationInSec * 1000
+				- durationInMin * 60 * 1000;
+		return Long.toString(durationInMin) + "mn : " + Long.toString(durationInSec) + "s : "
+				+ Long.toString(durationInMilliSec) + "ms";
 	}
 }

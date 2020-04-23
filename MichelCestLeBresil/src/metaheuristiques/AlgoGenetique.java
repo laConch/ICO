@@ -187,7 +187,7 @@ public class AlgoGenetique {
 	}
 
 	/**
-	 * Select randomly TOURNAMENT_SELECTION_SIZE Routes in the given Population.
+	 * Select randomly tournamentSelectionSize Routes in the given Population.
 	 * 
 	 * @param population
 	 * @return the tournament Population sorted by fitness
@@ -215,7 +215,7 @@ public class AlgoGenetique {
 
 	/**
 	 * Switch each city in the route with another city with a probability of
-	 * MUTATION_RATE
+	 * mutationRate
 	 * 
 	 * @param route
 	 * @return after mutation Route

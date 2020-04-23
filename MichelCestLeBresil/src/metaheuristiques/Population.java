@@ -16,7 +16,7 @@ import support.Route;
  * By Sethian & Bouzereau 3/18/2020
  */
 public class Population {
-	
+
 	public AlgoGenetique geneticAlgorithm;
 
 	private ArrayList<Route> routes;
@@ -25,7 +25,7 @@ public class Population {
 	public ArrayList<Route> getRoutes() {
 		return routes;
 	}
-	
+
 	public AlgoGenetique getGeneticAlgorithm() {
 		return geneticAlgorithm;
 	}
@@ -72,7 +72,7 @@ public class Population {
 		IntStream.range(0, geneticAlgorithm.getPopulationSize())
 				.forEach(x -> this.routes.add(new Route(geneticAlgorithm.getInitialRoute())));
 	}
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -81,14 +81,17 @@ public class Population {
 	 */
 	public Population(Population initialPopulation, Route route) {
 		this.geneticAlgorithm = initialPopulation.getGeneticAlgorithm();
-		
-		// Sort the population
+//
+//		System.out.println("####################################################");
 		initialPopulation.sortRoutesByFitness();
-		ArrayList<Route> newRoutes = initialPopulation.getRoutes();
+//		System.out.println(String.format("1 : %s", initialPopulation.getRoutes()));
+		ArrayList<Route> newRoutes = new ArrayList<>(initialPopulation.getRoutes());
+//		ArrayList<Route> newRoutes = initialPopulation.getRoutes();
 		// Remove the worse route
-		newRoutes.remove(newRoutes.size() -1);
+		newRoutes.remove(newRoutes.size() - 1);
 		// Add the route given in parameter
 		newRoutes.add(route);
 		this.routes = newRoutes;
+//		System.out.println(String.format("2 : %s", this.getRoutes()));
 	}
 }

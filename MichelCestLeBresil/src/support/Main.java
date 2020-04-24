@@ -29,23 +29,10 @@ public class Main {
 	/*
 	 * Parameters for the complex initialization
 	 */
-	// 2 < nbOfCities < 15494
-	public static int nbOfCities = 10;
-	// "WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United
-	// Kingdom, "USA" for United States, "RUS" for Russia
+	// "WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
 	public static String countryOfCities = "WORLD";
-	
-	/*
-	 * Parameters for the three agents
-	 */
-	public static int nbIterationsMaxSansAmelioration = 3;
-	public static Route routeInitialeAgentRS;
-	public static Route routeInitialeAgentTabou;
-	public static Route routeInitialeAgentGenetique;
-
-	/*
-	 * Parameters to test the RS algorithm and the Tabou algorithm
-	 */
+	// 2 < nbOfCities < 15494
+	public static int nbOfCities = 50;
 	// 6 < nbOfCitiesMin < 15494
 	public static final int nbOfCitiesMin = 10;
 	// nbOfCitiesMax > nbOfCitiesMin
@@ -54,8 +41,35 @@ public class Main {
 	public static final int stepNbOfCities = 10;
 	public static final int nbOfTestsPerNbOfCities = 1;
 	public static int nbOfTestsRealised = 0;
+	
+	/*
+	 * Parameters to write in csv file
+	 */
+	public static final String csvColumnDelimeter = ",";
+	public static final String csvRowDelimeter = "\n";
+	public static String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
+			+ csvColumnDelimeter + "Duration (in ms)" + csvRowDelimeter;
+	public static String contentToWrite = "";
+	
+	/*
+	 * Parameters for the three agents
+	 */
+	public static int nbIterationsMaxSansAmelioration = 3;
+	public static Route routeInitialeAgentRS;
+	public static Route routeInitialeAgentTabou;
+	public static Route routeInitialeAgentGenetique;
+	// si isCollaboration égale false alors on est en concurrence
+	public static final Boolean isCollaboration = true;
+	
+	/*
+	 * Parameters to test the RS algorithm and the Tabou algorithm
+	 */
 	public static Double[] coefficientRefroidissementList = new Double[] { 0.98 };
 	public static int[] nbIterationMaxPerCycleList = new int[] { 1000 };
+	
+	/*
+	 * Parameters to test the Tabou algorithm
+	 */
 	public static int[] tabouListSizeList = new int[] {10};
 	public static int[] nbIterationTabouList = new int[] { 50 };
 	
@@ -72,12 +86,7 @@ public class Main {
 	// Should be below populationSize
 	//private static int [] numberEliteRouteList = new int[] {1, 2, 3};
 	
-	public static final String csvColumnDelimeter = ",";
-	public static final String csvRowDelimeter = "\n";
-	public static String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
-			+ csvColumnDelimeter + "Duration (in ms)" + csvRowDelimeter;
-	public static String contentToWrite = "";
-	
+
 	/**
 	 * 
 	 * @param args
@@ -95,10 +104,6 @@ public class Main {
 	 * Launch the mainContainer which contains the three agents
 	 */
 	public static void lancerAgents() {
-		// Initialization of the initial road
-		// routeInitialeAgentRS = new Route(initialisationBasique());
-		// routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
-
 		// Initialization of the initial road
 		routeInitialeAgentGenetique = new Route(initialisationComplexe(countryOfCities));
 		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));

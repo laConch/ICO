@@ -157,25 +157,24 @@ public class Main {
 
 		String contentToWrite = "";
 
-//		for (int i = nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
-			nbOfCities = 100;
+		for (int i = nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
+			nbOfCities = i;
 			System.out.println(String.format("Number of cities : %s", nbOfCities));
 			ArrayList<City> route = initialisationComplexe("WORLD");
 			
-
-			int maxNumberWithoutGettingBetter = 5000;
-			int populationSize = 20;
-			int numberGeneration = 10000;
+			int maxWithoutGettingBetter = 10000;
+			int populationSize = 30;
+			int numberGeneration = nbOfCities * 100;
 			double mutationRate = 0.01;
-			int tournamentSelectionSize = 14;
+			int tournamentSelectionSize = 4;
 			int numberEliteRoute = 2;
-			double crossOverCut = 0.5;
+			double crossOverCut = 0.2;
 			
-//			for (int j = 0; j < 0.11; j += 0.01) {
-//				mutationRate = j;
-				System.out.println(String.format("     MutationRate : %s", mutationRate * 100));
+			for (int j = 100; j < 1001; j += 100) {
+				maxWithoutGettingBetter = j;
+				System.out.println(String.format("     maxWithoutGettingBetter : %s", maxWithoutGettingBetter));
 				AlgoGenetique geneticAlgorithm = new AlgoGenetique(route, populationSize, numberGeneration,
-						mutationRate, numberEliteRoute, numberEliteRoute, crossOverCut);
+						mutationRate, tournamentSelectionSize, numberEliteRoute, crossOverCut);
 
 				Population population = new Population(geneticAlgorithm, route, populationSize);
 				population.sortRoutesByFitness();
@@ -187,7 +186,7 @@ public class Main {
 				int numberWithoutGettingBetter = 0;
 				double bestFitness = 0;
 
-				while (numberWithoutGettingBetter < maxNumberWithoutGettingBetter
+				while (numberWithoutGettingBetter < maxWithoutGettingBetter
 						&& generation < geneticAlgorithm.numberGeneration) {
 					population = geneticAlgorithm.evolve(population);
 					population.sortRoutesByFitness();
@@ -212,10 +211,10 @@ public class Main {
 				contentToWrite += nbOfCities + csvColumnDelimeter + bestRoute.citiesNameOfRoute() + csvColumnDelimeter
 						+ bestRoute.getTotalDistance() + csvColumnDelimeter + bestRoute.getFitness()
 						+ csvColumnDelimeter + duration + csvColumnDelimeter + populationSize + csvColumnDelimeter
-						+ numberGeneration + csvColumnDelimeter + mutationRate + csvColumnDelimeter
+//						+ numberGeneration + csvColumnDelimeter + mutationRate + csvColumnDelimeter
 						+ tournamentSelectionSize + csvColumnDelimeter + numberEliteRoute + csvRowDelimeter;
-//			}
-//		}
+			}
+		}
 		writeResultInCSV(header, contentToWrite);
 	}
 	

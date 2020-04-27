@@ -37,6 +37,12 @@ public class AlgoGenetique {
 	 */
 	public int numberEliteRoute = 2;
 	
+	/*
+	 * Part of the parent 1 we take as it is in the crossover part
+	 */
+	public double crossOverCut = 0.5;
+	
+	
 	// To fix the size of the Routes
 	private ArrayList<City> initialRoute = null;
 
@@ -64,6 +70,10 @@ public class AlgoGenetique {
 	public int getNumberEliteRoute() {
 		return numberEliteRoute;
 	}
+	
+	public double getCrossOverCut() {
+		return crossOverCut;
+	}
 
 	/**
 	 * Constructor
@@ -83,21 +93,23 @@ public class AlgoGenetique {
 	 * @param mutationRate
 	 * @param tournamentSelectionSize
 	 * @param numberEliteRoute
+	 * @param crossOverCut
 	 */
 	public AlgoGenetique(ArrayList<City> initialRoute, int populationSize, int numberGeneration, double mutationRate,
-			int tournamentSelectionSize, int numberEliteRoute) {
+			int tournamentSelectionSize, int numberEliteRoute, double crossOverCut) {
 		this.initialRoute = initialRoute;
 		this.populationSize = populationSize;
 		this.numberGeneration = numberGeneration;
 		
 		try {
-			parametersValidation(mutationRate, tournamentSelectionSize, numberEliteRoute, populationSize);
+			parametersValidation(mutationRate, tournamentSelectionSize, numberEliteRoute, populationSize, crossOverCut);
 		} catch (GeneticCreationException e) {
 			System.out.println("Error in GeneticAlgorithm creation : " + e);
 		}
 		this.mutationRate = mutationRate;
 		this.tournamentSelectionSize = tournamentSelectionSize;
 		this.numberEliteRoute = numberEliteRoute;
+		this.crossOverCut = crossOverCut;
 	}
 	
 	/**
@@ -108,13 +120,15 @@ public class AlgoGenetique {
 	 * @param numberEliteRoute        : should be below populationSize
 	 */
 	private void parametersValidation(double mutationRate, int tournamentSelectionSize, int numberEliteRoute,
-			int populationSize) throws GeneticCreationException {
+			int populationSize, double crossOverCut) throws GeneticCreationException {
 		if (mutationRate < 0 || mutationRate > 1)
 			throw new GeneticCreationException("MutationRate should be between 0 and 1");
 		if (tournamentSelectionSize > populationSize)
 			throw new GeneticCreationException("TournamentSelectionSize should be below populationSize");
 		if (numberEliteRoute > populationSize)
 			throw new GeneticCreationException("NumberEliteRoute should be below populationSize");
+		if (crossOverCut < 0 || crossOverCut > 1)
+			throw new GeneticCreationException("CrossOverCut should be between 0 and 1");
 	}
 
 	/**
@@ -149,7 +163,7 @@ public class AlgoGenetique {
 	/**
 	 * Apply the crossover between route1 and route2.
 	 * 
-	 * An example :
+	 * An example with crossOverCut = 0.5 :
 	 * 		route 1 :           [Paris, Marseille, Lyon, Toulouse, Nice, Nantes, Strasbourg, Montpellier]
 	 * 		route 2 :           [Lyon, Marseille, Montpellier, Nantes, Nice, Paris, Strasbourg, Toulouse]
 	 * intermediate crossover : [Paris, Marseille, Lyon, Toulouse, null, null, null, null]		
@@ -161,9 +175,10 @@ public class AlgoGenetique {
 	 */
 	private Route crossoverRoute(Route route1, Route route2) {
 		Route crossoverRoute = new  Route(this);
-		for (int x = 0; x < crossoverRoute.getCities().size()/2; x++)
+		int partTakenAsItIs = (int) (crossoverRoute.getCities().size() * crossOverCut);
+		for (int x = 0; x < partTakenAsItIs ; x++)
 			crossoverRoute.getCities().set(x, route1.getCities().get(x));
-		return fillNullsInCrossoverRoute(crossoverRoute, route2);
+		return fillNullsInCrossoverRoute(crossoverRoute, route2, partTakenAsItIs);
 	}
 	
 	/**
@@ -174,9 +189,9 @@ public class AlgoGenetique {
 	 * @param route
 	 * @return
 	 */
-	private Route fillNullsInCrossoverRoute(Route crossoverRoute, Route route2) {
+	private Route fillNullsInCrossoverRoute(Route crossoverRoute, Route route2, int partTakenAsItIs) {
 		route2.getCities().stream().filter(x -> !crossoverRoute.getCities().contains(x)).forEach(cityX -> {
-			for (int y = route2.getCities().size()/2; y < route2.getCities().size(); y++) {
+			for (int y = partTakenAsItIs ; y < route2.getCities().size(); y++) {
 				if (crossoverRoute.getCities().get(y) == null) {
 					crossoverRoute.getCities().set(y, cityX);
 					break;

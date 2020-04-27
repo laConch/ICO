@@ -51,19 +51,19 @@ public class GeneticCollaborative extends CyclicBehaviour {
 		// First execution of the AlgoGenetique including the best solution of the
 		// previous cycle in the population
 		case 0:
-			System.out.println(String.format("Gen 1 : %s", Main.routeInitialeAgentGenetique));
+//			System.out.println(String.format("Gen 1 : %s", Main.routeInitialeAgentGenetique));
 			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
 
 			// Add the best route of the previous cycle to the population
 			population = new Population(population, initialRoute);
 			population.sortRoutesByFitness();
 
-			System.out.println(String.format("Gen 2 : %s", population.getRoutes().get(0)));
+//			System.out.println(String.format("Gen 2 : %s", population.getRoutes().get(0)));
 			for (int generation = 0; generation < geneticAlgorithm.getNumberGeneration(); generation++) {
 				population = geneticAlgorithm.evolve(population);
 				population.sortRoutesByFitness();
 			}
-			System.out.println(String.format("Gen 3 : %s", population.getRoutes().get(0)));
+//			System.out.println(String.format("Gen 3 : %s", population.getRoutes().get(0)));
 
 			// Select the best result
 			routes.add(population.getRoutes().get(0));

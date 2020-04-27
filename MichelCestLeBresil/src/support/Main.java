@@ -1,10 +1,7 @@
 package support;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import metaheuristiques.AlgoRS;
-import metaheuristiques.AlgoTabou;
 import metaheuristiques.AlgoGenetique;
 import metaheuristiques.Population;
 
@@ -42,7 +39,7 @@ public class Main {
 	// 6 < nbOfCitiesMin < 15494
 	public static final int nbOfCitiesMin = 10;
 	// nbOfCitiesMax > nbOfCitiesMin
-	public static final int nbOfCitiesMax = 10;
+	public static final int nbOfCitiesMax = 100;
 	// stepNbOfCities > 0
 	public static final int stepNbOfCities = 10;
 	public static final int nbOfTestsPerNbOfCities = 5;
@@ -50,19 +47,6 @@ public class Main {
 	public static int[] nbIterationMaxPerCycleList = new int[] { 1000 };
 	public static int[] tabouListSizeList = new int[] {10};
 	public static int[] nbIterationTabouList = new int[] { 50 };
-	
-	/*
-	 * Parameters to test the Genetic algorithm
-	 */
-	//private static int[] numberCitiesList = new int[] {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-	private static int[] populationSizeList = new int[] {8, 10, 12, 20};
-	//private static int[] numberGenerationList = new int[] {10, 50, 100, 1000};
-	// Should be between 0 and 1
-	private static double[] mutationRateList = new double[] {0.1, 0.2, 0.3};
-	// Should be below populationSize
-	//private static int[] tournamentSelectionSizeList = new int[] {2, 3, 4};
-	// Should be below populationSize
-	//private static int [] numberEliteRouteList = new int[] {1, 2, 3};
 	
 	public static final String csvColumnDelimeter = ",";
 	public static final String csvRowDelimeter = "\n";
@@ -72,99 +56,8 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		lancerAgents();
-//		executeGenetic();
-	}
-	
-	/**
-	 * Launch the mainContainer which contains the three agents
-	 */
-	public static void lancerAgents() {
-		// Initialization of the initial road
-		// routeInitialeAgentRS = new Route(initialisationBasique());
-		// routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
-
-		// Initialization of the initial road
-		routeInitialeAgentGenetique = new Route(initialisationComplexe(countryOfCities));
-		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
-		routeInitialeAgentTabou = new Route(initialisationComplexe(countryOfCities));
-		MainContainer.main(null);
-	}
-	
-	public static void testerAlgorithmeRS() {
-		//int nbOfTestsRealised = 0;
-		String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
-				+ csvColumnDelimeter + "Duration (in ms)" + csvColumnDelimeter + "Temperature" + csvColumnDelimeter
-				+ "Cooling coefficient" + csvColumnDelimeter + "Number of iterations per cycle" + csvRowDelimeter;
-		String contentToWrite = "";
-		for (int i = nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
-			nbOfCities = i;
-			for (Double j : coefficientRefroidissementList) {
-				for (int k : nbIterationMaxPerCycleList) {
-					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
-						// Initialise the route with one of the two methods
-						// Route initialRoute = new Route(initalisationBasique(),0);
-						Route initialRoute = new Route(initialisationComplexe(countryOfCities));
-
-						// Calculate the optimal route with the Recuit Simule Algorithm and calculate
-						// the duration of the method
-						long startTime = System.nanoTime();
-						Route optimalRoute = AlgoRS.obtainOptimalSolutionWithRecuitSimuleAlgorithm(initialRoute, j, k);
-						long endTime = System.nanoTime();
-						long duration = (endTime - startTime);
-
-						// Add the relative information of the test to the content to write
-						contentToWrite += i + csvColumnDelimeter + optimalRoute.getTotalDistance() + csvColumnDelimeter
-								+ optimalRoute.citiesNameOfRoute() + csvColumnDelimeter
-								+ Long.toString(Math.round(duration / 1000000)) + csvColumnDelimeter
-								+ AlgoRS.initialTemperature + csvColumnDelimeter + j + csvColumnDelimeter + k
-								+ csvRowDelimeter;
-					}
-					System.out.println(i + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter);
-				}
-			}
-		}
-		writeResultInCSV(header, contentToWrite);
-	}
-	
-	/*
-	 * Test the Tabou algorithm
-	 */
-	public static void testerAlgorithmeTabou() {
-		//int nbOfTestsRealised = 0;
-		String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
-				+ csvColumnDelimeter + "Duration (in ms)" + csvColumnDelimeter + "Taille liste Tabou"
-				+ csvColumnDelimeter + "Nb itération sans changement" + csvRowDelimeter;
-		String contentToWrite = "";
-		for (int i = nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
-			nbOfCities = i;
-			for (int j : tabouListSizeList) {
-				for (int k : nbIterationTabouList) {
-					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
-						// Initialise the route with one of the two methods
-						// Route initialRoute = new Route(initalisationBasique(),0);
-						Route initialRoute = new Route(initialisationComplexe(countryOfCities));
-
-						// Calculate the optimal route with the Recuit Simule Algorithm and calculate
-						// the duration of the method
-						long startTime = System.nanoTime();
-						Route optimalRoute = AlgoTabou.optiTS(initialRoute, k, j);
-						long endTime = System.nanoTime();
-						long duration = (endTime - startTime);
-
-						// Add the relative information of the test to the content to write
-						contentToWrite += i + csvColumnDelimeter + optimalRoute.getTotalDistance() + csvColumnDelimeter
-								+ optimalRoute.citiesNameOfRoute() + csvColumnDelimeter
-								+ Long.toString(Math.round(duration / 1000000)) + csvColumnDelimeter + j
-								+ csvColumnDelimeter + k + csvRowDelimeter;
-					}
-					System.out.println(i + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter);
-				}
-			}
-		}
-		writeResultInCSV(header, contentToWrite);
-	}
-	
+		testGeneticAlgorithm();
+	}	
 	
 	/**
 	 * Execute the genetic algorithm and print the results.
@@ -194,23 +87,6 @@ public class Main {
 			System.out.println(String.format("Popualtion : %s", population.getRoutes().get(0)));
 			System.out.println("---------------------------------------");
 		}
-	}
-	
-	/**
-	 * 
-	 * @return the sample of six cities to test the algorithms
-	 */
-	public static ArrayList<City> initialisationBasique() {
-		//Initialize the route with 6 French cities
-		
-		ArrayList<City> initialRoute = new ArrayList<City>(
-				Arrays.asList(
-						new City("Bordeaux", 44.833333, -0.566667), new City("Lyon", 45.750000, 4.850000),
-						new City("Nantes", 47.216667, -1.550000), new City("Paris", 48.866667, 2.333333),
-						new City("Marseille", 43.300000, 5.400000), new City("Dijon", 47.316667, 5.016667)
-						));
-		
-		return initialRoute;
 	}
 	
 	/**
@@ -273,8 +149,6 @@ public class Main {
 	 * The number of cities is fixed.
 	 */
 	public static void testGeneticAlgorithm() {
-		int maxNumberOfIterWithoutGettingBetter = 500;
-		int maxIter = 1000;
 		String header = "Number of cities" + csvColumnDelimeter + "Optimal route" + csvColumnDelimeter
 				+ "Optimal distance" + csvColumnDelimeter + "Optimal fitness" + csvColumnDelimeter + "Duration (in ms)"
 				+ csvColumnDelimeter + "PopulationSize" + csvColumnDelimeter + "Number of generation"
@@ -283,72 +157,65 @@ public class Main {
 
 		String contentToWrite = "";
 
-//		ArrayList<City> route = initialisationBasique();
-//		ArrayList<City> route = initialisationComplexe("WORLD");
+//		for (int i = nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
+			nbOfCities = 100;
+			System.out.println(String.format("Number of cities : %s", nbOfCities));
+			ArrayList<City> route = initialisationComplexe("WORLD");
+			
 
-		for (int i = nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
-			nbOfCities = i;
-			for (int populationSize : populationSizeList) {
-				int minTournamentSelectionSize = populationSize / 8;
-				int stepTournamentSelectionSize = populationSize / 8;
-				int minNumberEliteRoute = populationSize / 20;
-				int stepNumberEliteRoute = Math.max(1, populationSize / 10);
-				for (double mutationRate : mutationRateList) {
-					// for (int tournamentSelectionSize : tournamentSelectionSizeList) {
-					for (int tournamentSelectionSize = minTournamentSelectionSize; tournamentSelectionSize < populationSize; tournamentSelectionSize += stepTournamentSelectionSize) {
-						for (int numberEliteRoute = minNumberEliteRoute; numberEliteRoute < populationSize
-								/ 2; numberEliteRoute += stepNumberEliteRoute) {
-							// for (int numberGeneration : numberGenerationList) {
-							// while (
-							int numberGeneration = 1000;
+			int maxNumberWithoutGettingBetter = 5000;
+			int populationSize = 20;
+			int numberGeneration = 10000;
+			double mutationRate = 0.01;
+			int tournamentSelectionSize = 14;
+			int numberEliteRoute = 2;
+			double crossOverCut = 0.5;
+			
+//			for (int j = 0; j < 0.11; j += 0.01) {
+//				mutationRate = j;
+				System.out.println(String.format("     MutationRate : %s", mutationRate * 100));
+				AlgoGenetique geneticAlgorithm = new AlgoGenetique(route, populationSize, numberGeneration,
+						mutationRate, numberEliteRoute, numberEliteRoute, crossOverCut);
 
-							ArrayList<City> route = initialisationComplexe("WORLD");
-							AlgoGenetique geneticAlgorithm = new AlgoGenetique(route, populationSize,
-									numberGeneration, mutationRate, tournamentSelectionSize, numberEliteRoute);
+				Population population = new Population(geneticAlgorithm, route, populationSize);
+				population.sortRoutesByFitness();
 
-							Population population = new Population(geneticAlgorithm, route, populationSize);
-							population.sortRoutesByFitness();
+				// Time just before starting the algorithm
+				long startTime = System.nanoTime();
 
-							// Time just before starting the algorithm
-							long startTime = System.nanoTime();
+				int generation = 0;
+				int numberWithoutGettingBetter = 0;
+				double bestFitness = 0;
 
-							population = geneticAlgorithm.evolve(population);
-							population.sortRoutesByFitness();
-							double bestFitness = population.getRoutes().get(0).getFitness();
-
-							int iter = 0;
-							int numberOfIterWithoutGettingBetter = 0;
-
-							while (numberOfIterWithoutGettingBetter < maxNumberOfIterWithoutGettingBetter
-									&& iter < maxIter) {
-								population = geneticAlgorithm.evolve(population);
-								population.sortRoutesByFitness();
-								double tempBestFitness = population.getRoutes().get(0).getFitness();
-								if (tempBestFitness > bestFitness) {
-									bestFitness = tempBestFitness;
-								} else {
-									numberOfIterWithoutGettingBetter += 1;
-								}
-
-								iter += 1;
-							}
-
-							long duration = (System.nanoTime() - startTime) / 1000000;
-							Route bestRoute = population.getRoutes().get(0);
-
-							// Add the relative information of the test to the content to write
-							contentToWrite += i + csvColumnDelimeter + bestRoute.citiesNameOfRoute()
-									+ csvColumnDelimeter + bestRoute.getTotalDistance() + csvColumnDelimeter
-									+ bestRoute.getFitness() + csvColumnDelimeter + duration + csvColumnDelimeter
-									+ populationSize + csvColumnDelimeter + iter + csvColumnDelimeter + mutationRate
-									+ csvColumnDelimeter + tournamentSelectionSize + csvColumnDelimeter
-									+ numberEliteRoute + csvRowDelimeter;
-							// }
-						}
+				while (numberWithoutGettingBetter < maxNumberWithoutGettingBetter
+						&& generation < geneticAlgorithm.numberGeneration) {
+					population = geneticAlgorithm.evolve(population);
+					population.sortRoutesByFitness();
+					double tempBestFitness = population.getRoutes().get(0).getFitness();
+					if (tempBestFitness > bestFitness) {
+						bestFitness = tempBestFitness;
+						numberWithoutGettingBetter = 0;
 					}
+					else
+						numberWithoutGettingBetter += 1;
+					generation += 1;
 				}
-			}
-		}
+//				System.out.println("   numberWithoutGettingBetter : " + numberWithoutGettingBetter);
+//				System.out.println("   generation : " + generation);
+
+				long duration = (System.nanoTime() - startTime) / 1000000;
+				Route bestRoute = population.getRoutes().get(0);
+				
+				System.out.println("bestRoute : " + bestRoute.getTotalDistance());
+
+				// Add the relative information of the test to the content to write
+				contentToWrite += nbOfCities + csvColumnDelimeter + bestRoute.citiesNameOfRoute() + csvColumnDelimeter
+						+ bestRoute.getTotalDistance() + csvColumnDelimeter + bestRoute.getFitness()
+						+ csvColumnDelimeter + duration + csvColumnDelimeter + populationSize + csvColumnDelimeter
+						+ numberGeneration + csvColumnDelimeter + mutationRate + csvColumnDelimeter
+						+ tournamentSelectionSize + csvColumnDelimeter + numberEliteRoute + csvRowDelimeter;
+//			}
+//		}
 		writeResultInCSV(header, contentToWrite);
 	}
 	

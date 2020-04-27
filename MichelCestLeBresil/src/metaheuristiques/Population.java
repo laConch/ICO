@@ -81,17 +81,13 @@ public class Population {
 	 */
 	public Population(Population initialPopulation, Route route) {
 		this.geneticAlgorithm = initialPopulation.getGeneticAlgorithm();
-//
-//		System.out.println("####################################################");
+
 		initialPopulation.sortRoutesByFitness();
-//		System.out.println(String.format("1 : %s", initialPopulation.getRoutes()));
 		ArrayList<Route> newRoutes = new ArrayList<>(initialPopulation.getRoutes());
-//		ArrayList<Route> newRoutes = initialPopulation.getRoutes();
 		// Remove the worse route
 		newRoutes.remove(newRoutes.size() - 1);
 		// Add the route given in parameter
 		newRoutes.add(route);
 		this.routes = newRoutes;
-//		System.out.println(String.format("2 : %s", this.getRoutes()));
 	}
 }

@@ -1,8 +1,8 @@
 package agents;
 
 import comportements.GeneticCollaborative;
+import comportements.GeneticConcurrence;
 import jade.core.Agent;
-import support.Route;
 
 /**
  * Genetic Agent (daemon -> no graphical user interface)
@@ -20,6 +20,7 @@ public class AgentGenetique extends Agent {
 	protected void setup() {
 		System.out.println(this.getLocalName() + " is ready");
 		addBehaviour(new GeneticCollaborative(this));
+		//addBehaviour(new GeneticConcurrence(this));
 	}
 
 	protected void takeDown() {

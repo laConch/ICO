@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import agents.AgentTabou;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -50,19 +49,22 @@ public class GeneticCollaborative extends CyclicBehaviour {
 		// Execution of the AlgoGenetique including the best solution of the
 		// previous cycle in the population
 		case 0:
-			
-			geneticAlgorithm = new AlgoGenetique(Main.routeInitialeAgentGenetique.getCities());
-			// Generate randomly the population
-			population = new Population(geneticAlgorithm, Main.routeInitialeAgentGenetique.getCities(),
-					geneticAlgorithm.getPopulationSize()-1);
+//			System.out.println(String.format("Gen 1 : %s", Main.routeInitialeAgentGenetique));
+			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
+			geneticAlgorithm.setNumberGeneration(initialRoute.getCities().size() * 100);
+
 			// Add the best route of the previous cycle to the population
 			population.getRoutes().add(new Route(Main.routeInitialeAgentGenetique));
 			population.sortRoutesByFitness();
+
+//			System.out.println(String.format("Gen 2 : %s", population.getRoutes().get(0)));
 
 			for (int generation = 0; generation < geneticAlgorithm.getNumberGeneration(); generation++) {
 				population = geneticAlgorithm.evolve(population);
 				population.sortRoutesByFitness();
 			}
+			
+//			System.out.println(String.format("Gen 3 : %s", population.getRoutes().get(0)));
 
 			// Select the best result
 			routes.add(population.getRoutes().get(0));

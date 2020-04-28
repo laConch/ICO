@@ -53,6 +53,7 @@ public class GeneticCollaborative extends CyclicBehaviour {
 		case 0:
 //			System.out.println(String.format("Gen 1 : %s", Main.routeInitialeAgentGenetique));
 			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
+			geneticAlgorithm.setNumberGeneration(initialRoute.getCities().size() * 100);
 
 			// Add the best route of the previous cycle to the population
 			population = new Population(population, initialRoute);

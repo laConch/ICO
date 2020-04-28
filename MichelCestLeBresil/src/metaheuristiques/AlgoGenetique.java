@@ -15,20 +15,20 @@ import support.Route;
  */
 public class AlgoGenetique {
 
-	public int populationSize = 20;
+	public int populationSize = 30;
 	public int numberGeneration = 1000;
 
 	/*
 	 * Probability that a chromosome's gene will do random mutation. Here a
 	 * chromosome is a Route and a gene is a City in that Route.
 	 */
-	public double mutationRate = 0.1;
+	public double mutationRate = 0.01;
 
 	/*
 	 * Tournament population that is used for the Route's crossover selection.
 	 * Should be less than populationSize
 	 */
-	public int tournamentSelectionSize = 14;
+	public int tournamentSelectionSize = 4;
 
 	/*
 	 * Routes that are not subject to crossover or selection from one generation to
@@ -40,7 +40,7 @@ public class AlgoGenetique {
 	/*
 	 * Part of the parent 1 we take as it is in the crossover part
 	 */
-	public double crossOverCut = 0.5;
+	public double crossOverCut = 0.2;
 	
 	
 	// To fix the size of the Routes
@@ -73,6 +73,11 @@ public class AlgoGenetique {
 	
 	public double getCrossOverCut() {
 		return crossOverCut;
+	}
+	
+	// Setters
+	public void setNumberGeneration(int numberGeneration) {
+		this.numberGeneration = numberGeneration;
 	}
 
 	/**

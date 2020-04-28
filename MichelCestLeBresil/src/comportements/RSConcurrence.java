@@ -119,7 +119,7 @@ public class RSConcurrence extends jade.core.behaviours.CyclicBehaviour {
 			
 			break;
 
-		// Receive other agents solution
+		// Receive other agents solutions
 		case 2:
 
 			ACLMessage reply = myAgent.receive();

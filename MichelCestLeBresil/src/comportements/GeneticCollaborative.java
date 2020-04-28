@@ -40,7 +40,8 @@ public class GeneticCollaborative extends CyclicBehaviour {
 	private double bestScore = 0;
 	private int nbIterations = 0;
 	
-	AlgoGenetique geneticAlgorithm;
+	Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
+	AlgoGenetique geneticAlgorithm = new AlgoGenetique(initialRoute.getCities());
 	Population population;
 	
 	@Override
@@ -50,8 +51,11 @@ public class GeneticCollaborative extends CyclicBehaviour {
 		// previous cycle in the population
 		case 0:
 //			System.out.println(String.format("Gen 1 : %s", Main.routeInitialeAgentGenetique));
-			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
+			initialRoute = new Route(Main.routeInitialeAgentGenetique);
 			geneticAlgorithm.setNumberGeneration(initialRoute.getCities().size() * 100);
+			
+			population = new Population(geneticAlgorithm, initialRoute.getCities(),
+					geneticAlgorithm.getPopulationSize() - 1);
 
 			// Add the best route of the previous cycle to the population
 			population.getRoutes().add(new Route(Main.routeInitialeAgentGenetique));

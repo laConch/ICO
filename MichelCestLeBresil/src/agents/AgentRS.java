@@ -3,6 +3,7 @@ package agents;
 import java.util.concurrent.TimeUnit;
 
 import comportements.RSCollaborative;
+import comportements.RSConcurrence;
 import support.Main;
 import support.Route;
 
@@ -13,28 +14,40 @@ public class AgentRS extends jade.core.Agent {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static Route routeOptimaleAgentRS;
-	public static double coefficientRefroidissementAgentRS = 0.98;
-	public static int nbIterationMaxPerCycleAgentRS = 1000;
-	public long startTime;
+	public static Route routeOptimaleAgentRS = new Route(Main.routeInitialeAgentRS);
+	public static double coefficientRefroidissementAgentRS = 0.90; // 0.98
+	public static int stepCoefficientRefroidissementAgentRS = 5;
+	public static int nbIterationMaxPerCycleAgentRS = 500; // 1000
+	public static int nbMinIterationMaxPerCycleAgentRS = 100;
+	public static int stepNbIterationMaxPerCycleAgentRS = 100;
+	public static long startTime;
+	public static long endTime;
+	public static long duration;
 
 	protected void setup() {
 		startTime = System.nanoTime();
 		System.out.println(this.getLocalName() + " is ready");
-		addBehaviour(new RSCollaborative(this));
-
+		if(Main.isCollaboration) {addBehaviour(new RSCollaborative(this));}
+		else{addBehaviour(new RSConcurrence(this));}
 	}
 
 	protected void takeDown() {
-		long endTime = System.nanoTime();
-		long duration = (endTime - startTime);
 		System.out.println(this.getLocalName() + " is terminated");
+
+		endTime = System.nanoTime();
+		duration = (endTime - startTime);
+		
 		System.out.println();
 		System.out.println("---------------------------------------");
 		System.out.println();
-		System.out.println("Solution found in " + nanoSecDurationToStringInMinSecAndMilliSec(duration));
-		System.out.println("Score of the solution found " + Main.routeInitialeAgentRS.getTotalDistance());
+		System.out.println("Solution trouvée en " + nanoSecDurationToStringInMinSecAndMilliSec(duration));
+		System.out.println("Score de la solution trouvée "+ Main.routeInitialeAgentRS.getTotalDistance());
 		Main.routeInitialeAgentRS.printCitiesNameOfRoute();
+		
+		// Add the relative information of the test to the content to write
+		Main.contentToWrite += Main.nbOfCities + Main.csvColumnDelimeter + Main.routeInitialeAgentRS.getTotalDistance() + Main.csvColumnDelimeter + Main.routeInitialeAgentRS.citiesNameOfRoute() + Main.csvColumnDelimeter+ Long.toString(Math.round(duration / 1000000))	+ Main.csvRowDelimeter;
+		Main.nbOfTestsRealised++;
+		Main.testerAgents();
 	}
 
 	public static String nanoSecDurationToStringInMinSecAndMilliSec(long nanoSecDuration) {

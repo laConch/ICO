@@ -60,7 +60,6 @@ public class Route implements Serializable{
 		for (int i = 0; i < cities.size(); i++) {
 			this.cities.add(cities.get(i));
 		}
-		
 		// Mixed randomly
 		Collections.shuffle(this.cities);
 	}

@@ -10,6 +10,7 @@ import jade.util.leap.Properties;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
+import jade.wrapper.StaleProxyException;
 
 /**
  * Main container for the three agents
@@ -17,38 +18,51 @@ import jade.wrapper.ControllerException;
  * @since Apr 2, 2020
  */
 public class MainContainer {
+	
+	public static Runtime runtime;
+	public static AgentContainer mainContainer;
+	public static AgentController agentRS;
+	public static AgentController agentAG;
+	public static AgentController agentTabou;
 
-	public static void main(String[] args) {
+	public static void start() {
 		try {
 			// Instance of Jade's environment
-			Runtime runtime = Runtime.instance();
+			runtime = Runtime.instance();
 
 			// Container profile
 			Properties properties = new ExtendedProperties();
 			ProfileImpl profileImpl = new ProfileImpl(properties);
 
 			// Main container creation
-			AgentContainer mainContainer = runtime.createMainContainer(profileImpl);
+			mainContainer = runtime.createMainContainer(profileImpl);
 
 			// Launch the agent
 			mainContainer.start();
 
 			// Creation of the RS agentRS
-			AgentController agentRS;
 			agentRS = mainContainer.createNewAgent("agentRS", AgentRS.class.getName(), null);
 			agentRS.start();
 
 			// Creation of the Genetique agentGenetique
-			AgentController agentAG;
 			agentAG = mainContainer.createNewAgent("agentGenetique", AgentGenetique.class.getName(), null);
 			agentAG.start();
 
 			// Creation of the Tabou agentTabou
-			AgentController agentTabou;
 			agentTabou = mainContainer.createNewAgent("agentTabou", AgentTabou.class.getName(), null);
 			agentTabou.start();
 
 		} catch (ControllerException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void shutdown() {
+		try {
+			mainContainer.kill(); // jade.wrapper.AgentContainer
+		    Runtime.instance().shutDown(); // jade.core.Runtime
+		}
+		catch (StaleProxyException e ) {
 			e.printStackTrace();
 		}
 	}

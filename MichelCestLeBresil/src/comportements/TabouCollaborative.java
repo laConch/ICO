@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import agents.AgentRS;
 import agents.AgentTabou;
 import jade.core.AID;
 import jade.core.Agent;
@@ -44,10 +45,7 @@ public class TabouCollaborative extends jade.core.behaviours.CyclicBehaviour {
 			Route routeInitiale = new Route(Main.routeInitialeAgentTabou);
 			int nbIterationsTabou = AgentTabou.nbIterationSansAmelioration;
 			int tailleListeTabou = AgentTabou.tailleListeTabou;
-
 			AgentTabou.routeOptimaleAgentTabou = AlgoTabou.optiTS(routeInitiale, nbIterationsTabou, tailleListeTabou);
-			
-			System.out.println(String.format("Route de l'agent Tabou : %s", AgentTabou.routeOptimaleAgentTabou));
 			routes.add(AgentTabou.routeOptimaleAgentTabou);
 			step = 1;
 			break;
@@ -66,6 +64,12 @@ public class TabouCollaborative extends jade.core.behaviours.CyclicBehaviour {
 			myAgent.send(mes);
 			System.out.println(myAgent.getLocalName() + " sends road to agentGenetique and agentRS");
 			step = 2;
+			
+			System.out.println("------------------------------------------------------------------------------------");
+			System.out.println(myAgent.getLocalName() + " : " + AgentTabou.routeOptimaleAgentTabou.getTotalDistance());
+			//AgentTabou.routeOptimaleAgentTabou.printCitiesNameOfRoute();
+			System.out.println("------------------------------------------------------------------------------------");
+			
 			break;
 
 		// Receive other agents solution
@@ -96,7 +100,6 @@ public class TabouCollaborative extends jade.core.behaviours.CyclicBehaviour {
 		// Compare solutions, and keep the best one to start again the process
 		case 3:
 			double score = Main.routeInitialeAgentTabou.getTotalDistance();
-			System.out.println("Score de la route donnée par :" + myAgent.getLocalName() + score);
 			Main.routeInitialeAgentTabou = new Route(
 					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
 			score = Main.routeInitialeAgentTabou.getTotalDistance();
@@ -109,7 +112,6 @@ public class TabouCollaborative extends jade.core.behaviours.CyclicBehaviour {
 				nbIterations++;
 			}
 			if (nbIterations == Main.nbIterationsMaxSansAmelioration) {
-				
 				myAgent.doDelete();
 			}
 

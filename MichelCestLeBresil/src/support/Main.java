@@ -2,6 +2,18 @@ package support;
 
 import java.util.ArrayList;
 
+import agents.AgentGenetique;
+import agents.AgentRS;
+import agents.AgentTabou;
+
+import jade.core.Runtime;
+import jade.core.ProfileImpl;
+import jade.util.ExtendedProperties;
+import jade.util.leap.Properties;
+import jade.wrapper.ControllerException;
+
+import metaheuristiques.AlgoRS;
+import metaheuristiques.AlgoTabou;
 import metaheuristiques.AlgoGenetique;
 import metaheuristiques.Population;
 
@@ -18,11 +30,27 @@ public class Main {
 	/*
 	 * Parameters for the complex initialization
 	 */
+	// "WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
+	public static String countryOfCities = "WORLD";
 	// 2 < nbOfCities < 15494
 	public static int nbOfCities = 50;
-	// "WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United
-	// Kingdom, "USA" for United States, "RUS" for Russia
-	public static String countryOfCities = "WORLD";
+	// 6 < nbOfCitiesMin < 15494
+	public static final int nbOfCitiesMin = 10;
+	// nbOfCitiesMax > nbOfCitiesMin
+	public static final int nbOfCitiesMax = 100;
+	// stepNbOfCities > 0
+	public static final int stepNbOfCities = 10;
+	public static final int nbOfTestsPerNbOfCities = 1;
+	public static int nbOfTestsRealised = 0;
+	
+	/*
+	 * Parameters to write in csv file
+	 */
+	public static final String csvColumnDelimeter = ",";
+	public static final String csvRowDelimeter = "\n";
+	public static String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
+			+ csvColumnDelimeter + "Duration (in ms)" + csvRowDelimeter;
+	public static String contentToWrite = "";
 	
 	/*
 	 * Parameters for the three agents
@@ -30,34 +58,175 @@ public class Main {
 	public static int nbIterationsMaxSansAmelioration = 3;
 	public static Route routeInitialeAgentRS;
 	public static Route routeInitialeAgentTabou;
-	public static Route routeOptimaleTabou;
 	public static Route routeInitialeAgentGenetique;
-
+	// si isCollaboration égale false alors on est en concurrence
+	public static final Boolean isCollaboration = true;
+	
 	/*
 	 * Parameters to test the RS algorithm and the Tabou algorithm
 	 */
-	// 6 < nbOfCitiesMin < 15494
-	public static final int nbOfCitiesMin = 10;
-	// nbOfCitiesMax > nbOfCitiesMin
-	public static final int nbOfCitiesMax = 100;
-	// stepNbOfCities > 0
-	public static final int stepNbOfCities = 10;
-	public static final int nbOfTestsPerNbOfCities = 5;
 	public static Double[] coefficientRefroidissementList = new Double[] { 0.98 };
 	public static int[] nbIterationMaxPerCycleList = new int[] { 1000 };
+	
+	/*
+	 * Parameters to test the Tabou algorithm
+	 */
 	public static int[] tabouListSizeList = new int[] {10};
 	public static int[] nbIterationTabouList = new int[] { 50 };
-	
-	public static final String csvColumnDelimeter = ",";
-	public static final String csvRowDelimeter = "\n";
 	
 	/**
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		testGeneticAlgorithm();
-	}	
+		lancerAgents();
+		//testerAgents();
+		//testerAlgorithmeRS();
+		//testerAlgorithmeTabou();
+		//executeGenetic();
+		//testGeneticAlgorithm();
+	}
+	
+	/**
+	 * Launch the mainContainer which contains the three agents
+	 */
+	public static void lancerAgents() {
+		// Initialization of the initial road
+		routeInitialeAgentGenetique = new Route(initialisationComplexe(countryOfCities));
+		routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
+		routeInitialeAgentTabou = new Route(initialisationComplexe(countryOfCities));
+		MainContainer.start();
+		nbOfTestsRealised=-2;
+	}
+	
+	public static void testerAgents() {
+		if(nbOfTestsRealised == -1) {}
+		else if(nbOfTestsRealised == 0) {
+			// Initialization of the initial road
+			routeInitialeAgentGenetique = new Route(initialisationComplexe(countryOfCities));
+			routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
+			routeInitialeAgentTabou = new Route(initialisationComplexe(countryOfCities));
+			MainContainer.start();
+		}
+		else if (nbOfTestsRealised<nbOfTestsPerNbOfCities || (nbOfTestsRealised==nbOfTestsPerNbOfCities && nbOfCities < nbOfCitiesMax)){
+			if (nbOfTestsRealised==nbOfTestsPerNbOfCities && nbOfCities < nbOfCitiesMax) {
+				nbOfCities += stepNbOfCities;
+				nbOfTestsRealised = 0;
+			}
+			// Initialization of the initial road
+			routeInitialeAgentGenetique = new Route(initialisationComplexe(countryOfCities));
+			routeInitialeAgentRS = new Route(initialisationComplexe(countryOfCities));
+			routeInitialeAgentTabou = new Route(initialisationComplexe(countryOfCities));
+			try {
+				// Instance of Jade's environment
+				MainContainer.runtime = Runtime.instance();
+
+				// Container profile
+				Properties properties = new ExtendedProperties();
+				ProfileImpl profileImpl = new ProfileImpl(properties);
+
+				// Main container creation
+				MainContainer.mainContainer = MainContainer.runtime.createMainContainer(profileImpl);
+
+				// Launch the agent
+				MainContainer.mainContainer.start();
+
+				// Creation of the RS agentRS
+				MainContainer.agentRS = MainContainer.mainContainer.createNewAgent("agentRS", AgentRS.class.getName(), null);
+				MainContainer.agentRS.start();
+
+				// Creation of the Genetique agentGenetique
+				MainContainer.agentAG = MainContainer.mainContainer.createNewAgent("agentGenetique", AgentGenetique.class.getName(), null);
+				MainContainer.agentAG.start();
+
+				// Creation of the Tabou agentTabou
+				MainContainer.agentTabou = MainContainer.mainContainer.createNewAgent("agentTabou", AgentTabou.class.getName(), null);
+				MainContainer.agentTabou.start();
+				
+			}
+			catch (ControllerException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			writeResultInCSV(header, contentToWrite);
+			System.out.println("Test terminé");
+		}
+	}
+	
+	public static void testerAlgorithmeRS() {
+		//int nbOfTestsRealised = 0;
+		header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
+				+ csvColumnDelimeter + "Duration (in ms)" + csvColumnDelimeter + "Temperature" + csvColumnDelimeter
+				+ "Cooling coefficient" + csvColumnDelimeter + "Number of iterations per cycle" + csvRowDelimeter;
+		contentToWrite = "";
+		for (int i = nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
+			nbOfCities = i;
+			for (Double j : coefficientRefroidissementList) {
+				for (int k : nbIterationMaxPerCycleList) {
+					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
+						// Initialise the route with one of the two methods
+						// Route initialRoute = new Route(initalisationBasique(),0);
+						Route initialRoute = new Route(initialisationComplexe(countryOfCities));
+
+						// Calculate the optimal route with the Recuit Simule Algorithm and calculate
+						// the duration of the method
+						long startTime = System.nanoTime();
+						Route optimalRoute = AlgoRS.obtainOptimalSolutionWithRecuitSimuleAlgorithm(initialRoute, j, k);
+						long endTime = System.nanoTime();
+						long duration = (endTime - startTime);
+
+						// Add the relative information of the test to the content to write
+						contentToWrite += i + csvColumnDelimeter + optimalRoute.getTotalDistance() + csvColumnDelimeter
+								+ optimalRoute.citiesNameOfRoute() + csvColumnDelimeter
+								+ Long.toString(Math.round(duration / 1000000)) + csvColumnDelimeter
+								+ AlgoRS.initialTemperature + csvColumnDelimeter + j + csvColumnDelimeter + k
+								+ csvRowDelimeter;
+					}
+					System.out.println(i + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter);
+				}
+			}
+		}
+		writeResultInCSV(header, contentToWrite);
+	}
+	
+	/*
+	 * Test the Tabou algorithm
+	 */
+	public static void testerAlgorithmeTabou() {
+		//int nbOfTestsRealised = 0;
+		header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
+				+ csvColumnDelimeter + "Duration (in ms)" + csvColumnDelimeter + "Taille liste Tabou"
+				+ csvColumnDelimeter + "Nb itération sans changement" + csvRowDelimeter;
+		contentToWrite = "";
+		for (int i = nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
+			nbOfCities = i;
+			for (int j : tabouListSizeList) {
+				for (int k : nbIterationTabouList) {
+					for (int l = 0; l < nbOfTestsPerNbOfCities; l++) {
+						// Initialise the route with one of the two methods
+						// Route initialRoute = new Route(initalisationBasique(),0);
+						Route initialRoute = new Route(initialisationComplexe(countryOfCities));
+
+						// Calculate the optimal route with the Recuit Simule Algorithm and calculate
+						// the duration of the method
+						long startTime = System.nanoTime();
+						Route optimalRoute = AlgoTabou.optiTS(initialRoute, k, j);
+						long endTime = System.nanoTime();
+						long duration = (endTime - startTime);
+
+						// Add the relative information of the test to the content to write
+						contentToWrite += i + csvColumnDelimeter + optimalRoute.getTotalDistance() + csvColumnDelimeter
+								+ optimalRoute.citiesNameOfRoute() + csvColumnDelimeter
+								+ Long.toString(Math.round(duration / 1000000)) + csvColumnDelimeter + j
+								+ csvColumnDelimeter + k + csvRowDelimeter;
+					}
+					System.out.println(i + csvColumnDelimeter + j + csvColumnDelimeter + k + csvRowDelimeter);
+				}
+			}
+		}
+		writeResultInCSV(header, contentToWrite);
+	}
 	
 	/**
 	 * Execute the genetic algorithm and print the results.
@@ -92,7 +261,7 @@ public class Main {
 	/**
 	 * Return a list of cities extracted from the csv file "worldcities"
 	 * 
-	 * @param country : null for the world, "FRA" for France, "DEU" for Germany,
+	 * @param country : "WORLD" for the world, "FRA" for France, "DEU" for Germany,
 	 *                "GBR" for United Kingdom, "USA" for United States, "RUS" for
 	 *                Russia.
 	 * @return
@@ -155,7 +324,7 @@ public class Main {
 				+ csvColumnDelimeter + "Mutation rate" + csvColumnDelimeter + "Tournament selection size"
 				+ csvColumnDelimeter + "Number of elite routes" + csvRowDelimeter;
 
-		String contentToWrite = "";
+		contentToWrite = "";
 
 		for (int i = nbOfCitiesMin; i < nbOfCitiesMax + 1; i += stepNbOfCities) {
 			nbOfCities = i;

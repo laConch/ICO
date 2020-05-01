@@ -1,8 +1,8 @@
 package agents;
 
 import java.util.concurrent.TimeUnit;
-
 import comportements.RSCollaborative;
+import comportements.RSCollaborativeAvancee;
 import comportements.RSConcurrence;
 import support.Main;
 import support.Route;
@@ -15,20 +15,29 @@ public class AgentRS extends jade.core.Agent {
 	private static final long serialVersionUID = 1L;
 
 	public static Route routeOptimaleAgentRS = new Route(Main.routeInitialeAgentRS);
-	public static double coefficientRefroidissementAgentRS = 0.90; // 0.98
+	// Paramètres collaboration
+	public static double coefficientRefroidissementAgentRSForCollaboration = 0.99;
+	public static int nbIterationMaxPerCycleAgentRSForCollaboration = 1000;
+	// Paramètres concurrence
+	public static double coefficientRefroidissementAgentRS = 0.90;
 	public static int stepCoefficientRefroidissementAgentRS = 5;
-	public static int nbIterationMaxPerCycleAgentRS = 500; // 1000
+	public static int nbIterationMaxPerCycleAgentRS = 500;
 	public static int nbMinIterationMaxPerCycleAgentRS = 100;
 	public static int stepNbIterationMaxPerCycleAgentRS = 100;
 	public static long startTime;
 	public static long endTime;
 	public static long duration;
 
+	
 	protected void setup() {
-		startTime = System.nanoTime();
 		System.out.println(this.getLocalName() + " is ready");
 		if(Main.isCollaboration) {addBehaviour(new RSCollaborative(this));}
-		else{addBehaviour(new RSConcurrence(this));}
+		else {
+			if(Main.isCollaborationAvancee) {
+				addBehaviour(new RSCollaborativeAvancee(this));
+			}
+			else {addBehaviour(new RSConcurrence(this));}
+		}
 	}
 
 	protected void takeDown() {

@@ -230,9 +230,9 @@ public class AlgoGenetique {
 		int withoutAmelioration = 0;
 		double bestFitness = 0;
 		
-		System.out.println("GeneticAlgorithm " + this.toString());
+		//System.out.println("GeneticAlgorithm " + this.toString());
 		while (withoutAmelioration < maxWithoutAmelioration && generation < numberGeneration) {
-			System.out.println(String.format("Generation %s", generation));
+			//System.out.println(String.format("Generation %s", generation));
 			population = evolve(population);
 			population.sortRoutesByFitness();
 			double tempBestFitness = population.get(0).getFitness();

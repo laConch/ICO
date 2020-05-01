@@ -1,12 +1,9 @@
 package agents;
 
 import comportements.TabouCollaborative;
-/*
-import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
-import jade.core.behaviours.SequentialBehaviour;
-import jade.core.behaviours.TickerBehaviour;
-*/
+import comportements.TabouCollaborativeAvancee;
+import comportements.TabouConcurrence;
+import support.Main;
 import support.Route;
 
 public class AgentTabou extends jade.core.Agent {
@@ -16,18 +13,33 @@ public class AgentTabou extends jade.core.Agent {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static Route routeOptimaleAgentTabou;
+	public static Route routeOptimaleAgentTabou = new Route(Main.routeInitialeAgentTabou);
 	public static int tailleListeTabou = 10;
+	public static int steptailleListeTabou = 1;
+
 	public static int nbIterationSansAmelioration = 50;
+	public static int nbIterationMaxPerCycleAgentTabou = 500; // 1000
+	public static int nbMinIterationMaxPerCycleAgentTabou = 100;
+	public static int stepNbIterationMaxPerCycleAgentTabou = 100;
+
+	public static long startTime;
+	public static long endTime;
+	public static long duration;
 
 	protected void setup() {
-
 		System.out.println(this.getLocalName() + " is ready");
-		addBehaviour(new TabouCollaborative(this));
-
+		if(Main.isCollaboration) {addBehaviour(new TabouCollaborative(this));}
+		else {
+			if(Main.isCollaborationAvancee) {
+				addBehaviour(new TabouCollaborativeAvancee(this));
+			}
+			else {addBehaviour(new TabouConcurrence(this));}
+		}
 	}
+	
 
 	protected void takeDown() {
 		System.out.println(this.getLocalName() + " is terminated");
 	}
+
 }

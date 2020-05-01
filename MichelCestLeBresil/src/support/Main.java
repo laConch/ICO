@@ -57,8 +57,9 @@ public class Main {
 	public static Route routeInitialeAgentRS;
 	public static Route routeInitialeAgentTabou;
 	public static Route routeInitialeAgentGenetique;
-	// si isCollaboration égale false alors on est en concurrence
-	public static final Boolean isCollaboration = true;
+	public static final Boolean isCollaboration = false;
+	public static final Boolean isCollaborationAvancee = true;
+	// Si les booléens isCollaboration et isCollaborationAvancee sont faux alors c'est la concurrence
 	
 	/*
 	 * Parameters to test the RS algorithm and the Tabou algorithm
@@ -77,11 +78,11 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//lancerAgents();
+		lancerAgents();
 		//testerAgents();
 		//testerAlgorithmeRS();
 		//testerAlgorithmeTabou();
-		executeGenetic();
+		//executeGenetic();
 		//testGeneticAlgorithm();
 	}
 	

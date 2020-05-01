@@ -43,8 +43,8 @@ public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 			Route currentRoute = new Route(Main.routeInitialeAgentRS);
 			Route searchedRoute = new Route(Main.routeInitialeAgentRS);
 			AgentRS.routeOptimaleAgentRS = new Route(Main.routeInitialeAgentRS);
-			double coefficientRefroidissement = AgentRS.coefficientRefroidissementAgentRS;
-			int nbIterationMaxPerCycle = AgentRS.nbIterationMaxPerCycleAgentRS;
+			double coefficientRefroidissement = AgentRS.coefficientRefroidissementAgentRSForCollaboration;
+			int nbIterationMaxPerCycle = AgentRS.nbIterationMaxPerCycleAgentRSForCollaboration;
 
 			int routeSize = currentRoute.getCities().size();
 

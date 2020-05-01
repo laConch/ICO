@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import agents.AgentGenetique;
 import agents.AgentRS;
 import agents.AgentTabou;
-
 import jade.core.Runtime;
 import jade.core.ProfileImpl;
 import jade.util.ExtendedProperties;
@@ -15,7 +14,6 @@ import jade.wrapper.ControllerException;
 import metaheuristiques.AlgoRS;
 import metaheuristiques.AlgoTabou;
 import metaheuristiques.AlgoGenetique;
-import metaheuristiques.Population;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -79,11 +77,11 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		lancerAgents();
+		//lancerAgents();
 		//testerAgents();
 		//testerAlgorithmeRS();
 		//testerAlgorithmeTabou();
-		//executeGenetic();
+		executeGenetic();
 		//testGeneticAlgorithm();
 	}
 	
@@ -231,31 +229,23 @@ public class Main {
 	/**
 	 * Execute the genetic algorithm and print the results.
 	 */
-	public static void executeGenetic() {
+	private static void executeGenetic() {
+		int populationSize = 39;
+		int numberGeneration = 1054;
+		double mutationRate = 0.0157;
+		int tournamentSelectionSize = 22;
+		int numberEliteRoute = 0;
+		int numberCrossOverRoute = 24;
+		int numberRandomRoute = 0;
+		double crossOverCut = 0.8823;
+		int maxWithoutAmelioration = 165;
 
-//		ArrayList<City> route = initialisationBasique();
-//		ArrayList<City> route = initialisationComplexe("FRA");
 		routeInitialeAgentGenetique = new Route(initialisationComplexe(countryOfCities));
-		
-		AlgoGenetique geneticAlgorithm = new AlgoGenetique(Main.routeInitialeAgentGenetique.getCities());
-		// First Population randomly generated
-		Population population = new Population(geneticAlgorithm, Main.routeInitialeAgentGenetique.getCities(),
-				geneticAlgorithm.getPopulationSize());
-		
-//		AlgoGenetique geneticAlgorithm = new AlgoGenetique(route);
-//
-//		// Random population
-//		Population population = new Population(geneticAlgorithm, route, geneticAlgorithm.getPopulationSize());
-//		population.sortRoutesByFitness();
-		
-		for (int generation = 0; generation < geneticAlgorithm.getNumberGeneration(); generation++) {
-			System.out.println(String.format("Generation number : %s", generation));
-			population = geneticAlgorithm.evolve(population);
-			population.sortRoutesByFitness();
-			System.out.println(String.format("Size : %s", population.getRoutes().get(0).getCities().size()));
-			System.out.println(String.format("Popualtion : %s", population.getRoutes().get(0)));
-			System.out.println("---------------------------------------");
-		}
+
+		AlgoGenetique geneticAlgorithm = new AlgoGenetique(routeInitialeAgentGenetique.getCities(), populationSize,
+				numberGeneration, mutationRate, tournamentSelectionSize, numberEliteRoute, numberCrossOverRoute,
+				numberRandomRoute, crossOverCut, maxWithoutAmelioration);
+		geneticAlgorithm.run();
 	}
 	
 	/**
@@ -337,52 +327,30 @@ public class Main {
 			double mutationRate = 0.01;
 			int tournamentSelectionSize = 4;
 			int numberEliteRoute = 2;
+			int numberCrossOverRoute = 24;
+			int numberRandomRoute = 0;
 			double crossOverCut = 0.2;
+			int maxWithoutAmelioration = 165;
 			
 			for (int j = 100; j < 1001; j += 100) {
 				maxWithoutGettingBetter = j;
 				System.out.println(String.format("     maxWithoutGettingBetter : %s", maxWithoutGettingBetter));
 				AlgoGenetique geneticAlgorithm = new AlgoGenetique(route, populationSize, numberGeneration,
-						mutationRate, tournamentSelectionSize, numberEliteRoute, crossOverCut);
+						mutationRate, tournamentSelectionSize, numberEliteRoute, numberCrossOverRoute,
+						numberRandomRoute, crossOverCut, maxWithoutAmelioration);
 
-				Population population = new Population(geneticAlgorithm, route, populationSize);
-				population.sortRoutesByFitness();
-
-				// Time just before starting the algorithm
-				long startTime = System.nanoTime();
-
-				int generation = 0;
-				int numberWithoutGettingBetter = 0;
-				double bestFitness = 0;
-
-				while (numberWithoutGettingBetter < maxWithoutGettingBetter
-						&& generation < geneticAlgorithm.numberGeneration) {
-					population = geneticAlgorithm.evolve(population);
-					population.sortRoutesByFitness();
-					double tempBestFitness = population.getRoutes().get(0).getFitness();
-					if (tempBestFitness > bestFitness) {
-						bestFitness = tempBestFitness;
-						numberWithoutGettingBetter = 0;
-					}
-					else
-						numberWithoutGettingBetter += 1;
-					generation += 1;
-				}
-//				System.out.println("   numberWithoutGettingBetter : " + numberWithoutGettingBetter);
-//				System.out.println("   generation : " + generation);
-
-				long duration = (System.nanoTime() - startTime) / 1000000;
-				Route bestRoute = population.getRoutes().get(0);
-				
-				System.out.println("bestRoute : " + bestRoute.getTotalDistance());
-
-				// Add the relative information of the test to the content to write
-				contentToWrite += nbOfCities + csvColumnDelimeter + bestRoute.citiesNameOfRoute() + csvColumnDelimeter
-						+ bestRoute.getTotalDistance() + csvColumnDelimeter + bestRoute.getFitness()
-						+ csvColumnDelimeter + duration + csvColumnDelimeter + populationSize + csvColumnDelimeter
-//						+ numberGeneration + csvColumnDelimeter + mutationRate + csvColumnDelimeter
-						+ tournamentSelectionSize + csvColumnDelimeter + numberEliteRoute + csvRowDelimeter;
+				geneticAlgorithm.run();
 			}
+				
+//				System.out.println("bestRoute : " + bestRoute.getTotalDistance());
+//
+//				// Add the relative information of the test to the content to write
+//				contentToWrite += nbOfCities + csvColumnDelimeter + bestRoute.citiesNameOfRoute() + csvColumnDelimeter
+//						+ bestRoute.getTotalDistance() + csvColumnDelimeter + bestRoute.getFitness()
+//						+ csvColumnDelimeter + duration + csvColumnDelimeter + populationSize + csvColumnDelimeter
+////						+ numberGeneration + csvColumnDelimeter + mutationRate + csvColumnDelimeter
+//						+ tournamentSelectionSize + csvColumnDelimeter + numberEliteRoute + csvRowDelimeter;
+//			}
 		}
 		writeResultInCSV(header, contentToWrite);
 	}

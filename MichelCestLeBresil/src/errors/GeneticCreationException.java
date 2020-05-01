@@ -5,7 +5,7 @@ package errors;
  * Genetic Algorithm
  * 
  * @author Sethian & Bouzereau
- * @since Apr 11, 2020
+ * @since Apr 24, 2020
  */
 public class GeneticCreationException extends Exception {
 

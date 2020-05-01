@@ -223,8 +223,10 @@ public class AlgoGenetique {
 	public Route runForAgent(Route initialRoute) {
 		Population population = initialPopulation(populationSize);
 		//We add the best route previously found to the population.
+		initialRoute.setFitness();
 		population.set(0, initialRoute);
 		population.sortRoutesByFitness();
+		
 		
 		int generation = 0;
 		int withoutAmelioration = 0;
@@ -252,6 +254,7 @@ public class AlgoGenetique {
 	public static Population initialPopulation(int populationSize) {
 		Population population = new Population(populationSize);
 		IntStream.range(0, populationSize).forEach(x -> {
+			// randomRoute
 			Route newRoute = new Route(initialRoute);
 			newRoute.setFitness();
 			population.add(newRoute);

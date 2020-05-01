@@ -1,1 +1,1 @@
-http://192.168.0.24:7778/acc
+http://PCJean:7778/acc

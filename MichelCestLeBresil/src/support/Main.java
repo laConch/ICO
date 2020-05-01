@@ -31,7 +31,7 @@ public class Main {
 	// "WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
 	public static String countryOfCities = "WORLD";
 	// 2 < nbOfCities < 15494
-	public static int nbOfCities = 50;
+	public static int nbOfCities = 100;
 	// 6 < nbOfCitiesMin < 15494
 	public static final int nbOfCitiesMin = 10;
 	// nbOfCitiesMax > nbOfCitiesMin

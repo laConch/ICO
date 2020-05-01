@@ -45,11 +45,12 @@ public class GeneticCollaborative extends CyclicBehaviour {
 
 	private int step = 0;
 	private int nbReplies = 0;
-	ArrayList<Route> routes = new ArrayList<Route>();
+	private ArrayList<Route> routes = new ArrayList<Route>();
 	private double bestScore = 0;
 	private int nbIterations = 0;
 	
-	AlgoGenetique geneticAlgorithm;
+	private AlgoGenetique geneticAlgorithm;
+	private Route bestRoute;
 	
 	@Override
 	public void action() {
@@ -58,14 +59,15 @@ public class GeneticCollaborative extends CyclicBehaviour {
 		// previous cycle in the population
 		case 0:
 			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
+			
 			geneticAlgorithm = new AlgoGenetique(initialRoute.getCities(), populationSize, numberGeneration,
 					mutationRate, tournamentSelectionSize, numberEliteRoute, numberCrossOverRoute, numberRandomRoute,
 					crossOverCut, maxWithoutAmelioration);
 			
-			Main.routeInitialeAgentGenetique  = geneticAlgorithm.runForAgent(initialRoute);
+			bestRoute = geneticAlgorithm.runForAgent(initialRoute);
 
 			// Select the best result
-			routes.add(Main.routeInitialeAgentGenetique);
+			routes.add(bestRoute);
 			step = 1;
 			break;
 
@@ -76,7 +78,7 @@ public class GeneticCollaborative extends CyclicBehaviour {
 			message.addReceiver(new AID("agentRS", AID.ISLOCALNAME));
 			message.addReceiver(new AID("agentTabou", AID.ISLOCALNAME));
 			try {
-				message.setContentObject((Serializable) Main.routeInitialeAgentGenetique);
+				message.setContentObject((Serializable) bestRoute);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -85,7 +87,7 @@ public class GeneticCollaborative extends CyclicBehaviour {
 			step = 2;
 
 			System.out.println("------------------------------------------------------------------------------------");
-			System.out.println(myAgent.getLocalName() + " : " + Main.routeInitialeAgentGenetique.getTotalDistance());
+			System.out.println(myAgent.getLocalName() + " : " + bestRoute.getTotalDistance());
 			// population.getRoutes().get(0).printCitiesNameOfRoute();
 			System.out.println("------------------------------------------------------------------------------------");
 
@@ -117,7 +119,9 @@ public class GeneticCollaborative extends CyclicBehaviour {
 
 		// Compare solutions, and keep the best one to start again the process
 		case 3:
-			Main.routeInitialeAgentGenetique = new Route(Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
+			// Add the best of the three routes
+			Main.routeInitialeAgentGenetique = new Route(
+					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
 			double score = Main.routeInitialeAgentGenetique.getTotalDistance();
 
 			// Stop condition

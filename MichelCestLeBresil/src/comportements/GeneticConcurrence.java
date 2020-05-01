@@ -53,34 +53,28 @@ public class GeneticConcurrence extends CyclicBehaviour {
 	private int nbReplies = 0;
 	ArrayList<Route> routes = new ArrayList<Route>();
 	private int nbIterations = 0;
-	private static long startTime;
-	private double currentTimeToFindSolution;
-	private double previousTimeToFindSolution = 0;
 	private double currentScore;
 	private double previousScore = 0;
 	private double previousBestScore = 0;
 
-	AlgoGenetique geneticAlgorithm;
+	private AlgoGenetique geneticAlgorithm;
+	private Route bestRoute = new Route(Main.routeInitialeAgentGenetique);
 
 	@Override
 	public void action() {
 		switch (step) {
 		// Execution of the AlgoGenetique from the best solution found before
 		case 0:
-			startTime = System.nanoTime();
-
-			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
+			Route initialRoute = new Route(bestRoute);
 			geneticAlgorithm = new AlgoGenetique(initialRoute.getCities(), populationSize, numberGeneration,
 					mutationRate, tournamentSelectionSize, numberEliteRoute, numberCrossOverRoute, numberRandomRoute,
 					crossOverCut, maxWithoutAmelioration);
 
-			Main.routeInitialeAgentGenetique = geneticAlgorithm.runForAgent(initialRoute);
-
-			currentTimeToFindSolution = System.nanoTime() - startTime;
-			currentScore = Main.routeInitialeAgentGenetique.getTotalDistance();
+			bestRoute = geneticAlgorithm.runForAgent(initialRoute);
+			currentScore = bestRoute.getTotalDistance();
 
 			// Select the best result
-			routes.add(Main.routeInitialeAgentGenetique);
+			routes.add(bestRoute);
 			step = 1;
 			break;
 
@@ -91,7 +85,7 @@ public class GeneticConcurrence extends CyclicBehaviour {
 			message.addReceiver(new AID("agentRS", AID.ISLOCALNAME));
 			message.addReceiver(new AID("agentTabou", AID.ISLOCALNAME));
 			try {
-				message.setContentObject((Serializable) Main.routeInitialeAgentGenetique);
+				message.setContentObject((Serializable) bestRoute);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -100,7 +94,7 @@ public class GeneticConcurrence extends CyclicBehaviour {
 			step = 2;
 
 			System.out.println("------------------------------------------------------------------------------------");
-			System.out.println(myAgent.getLocalName() + " : " + Main.routeInitialeAgentGenetique.getTotalDistance());
+			System.out.println(myAgent.getLocalName() + " : " + bestRoute.getTotalDistance());
 			// population.getRoutes().get(0).printCitiesNameOfRoute();
 			System.out.println("------------------------------------------------------------------------------------");
 
@@ -169,7 +163,6 @@ public class GeneticConcurrence extends CyclicBehaviour {
 			// Save current variables as previous variables for next iteration
 			previousScore = currentScore;
 			previousBestScore = currentBestScore;
-			previousTimeToFindSolution = currentTimeToFindSolution;
 
 			step = 0;
 			break;

@@ -29,15 +29,20 @@ public class GeneticConcurrence extends CyclicBehaviour {
 	private static final long serialVersionUID = 1L;
 	
 	// Parameters for the GeneticAlgorithm
-	private static int populationSize = 39;
-	private static int numberGeneration = 1054;
-	private static double mutationRate = 0.0157;
-	private static int tournamentSelectionSize = 22;
-	private static int numberEliteRoute = 0;
-	private static int numberCrossOverRoute = 24;
-	private static int numberRandomRoute = 0;
-	private static double crossOverCut = 0.8823;
-	private static int maxWithoutAmelioration = 165;
+	private static int populationSize = 191;
+	private static int numberGeneration = 1709;
+	private static double mutationRate = 0.0336;
+	private static int tournamentSelectionSize = 98;
+	private static int numberEliteRoute = 3;
+	private static int numberCrossOverRoute = 74;
+	private static int numberRandomRoute = 19;
+	private static double crossOverCut = 0.1470;
+	private static int maxWithoutAmelioration = 1654;
+	
+	// Parameters uses in the competition behavior to improve the time to find a
+	// solution
+	public static final int NUMBER_GENERATION_MIN = 500;
+	public static final int NUMBER_GENERATION_STEP = 500;
 
 	// Constructor
 	public GeneticConcurrence(Agent agent) {
@@ -135,26 +140,20 @@ public class GeneticConcurrence extends CyclicBehaviour {
 			if (currentScore == currentBestScore) {
 				if (previousScore == 0 || currentScore < previousScore) {
 					// Change the parameters in order to improve the time to find a solution
-					if (geneticAlgorithm.getNumberGeneration()
-							- AlgoGenetique.NUMBER_GENERATION_STEP >= AlgoGenetique.NUMBER_GENERATION_MIN) {
-						geneticAlgorithm.setNumberGeneration(
-								geneticAlgorithm.getNumberGeneration() - AlgoGenetique.NUMBER_GENERATION_STEP);
-						System.out.println(
-								String.format("NumberGeneration : %s", geneticAlgorithm.getNumberGeneration()));
+					if (numberGeneration - NUMBER_GENERATION_STEP >= NUMBER_GENERATION_MIN) {
+						numberGeneration -= NUMBER_GENERATION_STEP;
+						System.out.println(String.format("NumberGeneration : %s", numberGeneration));
 					} else {
 						// Change parameters to improve the score
-						geneticAlgorithm.setNumberGeneration(
-								geneticAlgorithm.getNumberGeneration() + AlgoGenetique.NUMBER_GENERATION_STEP);
-						System.out.println(
-								String.format("NumberGeneration : %s", geneticAlgorithm.getNumberGeneration()));
+						numberGeneration += NUMBER_GENERATION_STEP;
+						System.out.println(String.format("NumberGeneration : %s", numberGeneration));
 					}
 				} else {
 					// If the genetic Agent is not the best
 					// Change the parameters to improve the score
 					// TODO : improve another parameter
-					geneticAlgorithm.setNumberGeneration(
-							geneticAlgorithm.getNumberGeneration() + AlgoGenetique.NUMBER_GENERATION_STEP);
-					System.out.println(String.format("NumberGeneration : %s", geneticAlgorithm.getNumberGeneration()));
+					numberGeneration += NUMBER_GENERATION_STEP;
+					System.out.println(String.format("NumberGeneration : %s", numberGeneration));
 				}
 			}
 

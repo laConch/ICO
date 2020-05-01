@@ -29,15 +29,15 @@ public class GeneticCollaborative extends CyclicBehaviour {
 	private static final long serialVersionUID = 1L;
 	
 	// Parameters for the GeneticAlgorithm
-	private static int populationSize = 39;
-	private static int numberGeneration = 1054;
-	private static double mutationRate = 0.0157;
-	private static int tournamentSelectionSize = 22;
-	private static int numberEliteRoute = 0;
-	private static int numberCrossOverRoute = 24;
-	private static int numberRandomRoute = 0;
-	private static double crossOverCut = 0.8823;
-	private static int maxWithoutAmelioration = 165;
+	private static int populationSize = 191;
+	private static int numberGeneration = 1709;
+	private static double mutationRate = 0.0336;
+	private static int tournamentSelectionSize = 98;
+	private static int numberEliteRoute = 3;
+	private static int numberCrossOverRoute = 74;
+	private static int numberRandomRoute = 19;
+	private static double crossOverCut = 0.1470;
+	private static int maxWithoutAmelioration = 1654;
 
 	// Constructor
 	public GeneticCollaborative(Agent agent) {

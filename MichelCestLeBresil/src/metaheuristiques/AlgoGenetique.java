@@ -20,11 +20,6 @@ public class AlgoGenetique {
 
 	public int populationSize;
 	public int numberGeneration;
-	
-	// Parameters uses in the competition behavior to improve the time to find a
-	// solution
-	public static final int NUMBER_GENERATION_MIN = 500;
-	public static final int NUMBER_GENERATION_STEP = 500;
 
 	/*
 	 * Probability that a chromosome's gene will do random mutation. Here a

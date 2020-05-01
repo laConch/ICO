@@ -117,7 +117,6 @@ public class RSCollaborative extends jade.core.behaviours.CyclicBehaviour {
 					System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
 					routes.add((Route) reply.getContentObject());					
 				} catch (UnreadableException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				nbReplies++;

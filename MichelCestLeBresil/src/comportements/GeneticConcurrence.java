@@ -6,14 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import agents.AgentRS;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import metaheuristiques.AlgoGenetique;
-import metaheuristiques.Population;
 import support.Main;
 import support.Route;
 
@@ -29,6 +27,17 @@ public class GeneticConcurrence extends CyclicBehaviour {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	// Parameters for the GeneticAlgorithm
+	private static int populationSize = 39;
+	private static int numberGeneration = 1054;
+	private static double mutationRate = 0.0157;
+	private static int tournamentSelectionSize = 22;
+	private static int numberEliteRoute = 0;
+	private static int numberCrossOverRoute = 24;
+	private static int numberRandomRoute = 0;
+	private static double crossOverCut = 0.8823;
+	private static int maxWithoutAmelioration = 165;
 
 	// Constructor
 	public GeneticConcurrence(Agent agent) {
@@ -40,16 +49,13 @@ public class GeneticConcurrence extends CyclicBehaviour {
 	ArrayList<Route> routes = new ArrayList<Route>();
 	private int nbIterations = 0;
 	private static long startTime;
-	private static long endTime;
 	private double currentTimeToFindSolution;
 	private double previousTimeToFindSolution = 0;
 	private double currentScore;
 	private double previousScore = 0;
-	private double currentBestScore;
 	private double previousBestScore = 0;
 
 	AlgoGenetique geneticAlgorithm;
-	Population population;
 
 	@Override
 	public void action() {
@@ -59,22 +65,17 @@ public class GeneticConcurrence extends CyclicBehaviour {
 			startTime = System.nanoTime();
 
 			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
-			geneticAlgorithm.setNumberGeneration(initialRoute.getCities().size() * 100);
+			geneticAlgorithm = new AlgoGenetique(initialRoute.getCities(), populationSize, numberGeneration,
+					mutationRate, tournamentSelectionSize, numberEliteRoute, numberCrossOverRoute, numberRandomRoute,
+					crossOverCut, maxWithoutAmelioration);
 
-			// Add the best route of the previous cycle to the population
-			population.getRoutes().add(new Route(Main.routeInitialeAgentGenetique));
-			population.sortRoutesByFitness();
+			Main.routeInitialeAgentGenetique = geneticAlgorithm.runForAgent(initialRoute);
 
-			for (int generation = 0; generation < geneticAlgorithm.getNumberGeneration(); generation++) {
-				population = geneticAlgorithm.evolve(population);
-				population.sortRoutesByFitness();
-			}
+			currentTimeToFindSolution = System.nanoTime() - startTime;
+			currentScore = Main.routeInitialeAgentGenetique.getTotalDistance();
 
-			endTime = System.nanoTime();
-			currentTimeToFindSolution = endTime - startTime;
-			currentScore = population.getRoutes().get(0).getTotalDistance();
 			// Select the best result
-			routes.add(population.getRoutes().get(0));
+			routes.add(Main.routeInitialeAgentGenetique);
 			step = 1;
 			break;
 
@@ -85,7 +86,7 @@ public class GeneticConcurrence extends CyclicBehaviour {
 			message.addReceiver(new AID("agentRS", AID.ISLOCALNAME));
 			message.addReceiver(new AID("agentTabou", AID.ISLOCALNAME));
 			try {
-				message.setContentObject((Serializable) population.getRoutes().get(0));
+				message.setContentObject((Serializable) Main.routeInitialeAgentGenetique);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -94,7 +95,7 @@ public class GeneticConcurrence extends CyclicBehaviour {
 			step = 2;
 
 			System.out.println("------------------------------------------------------------------------------------");
-			System.out.println(myAgent.getLocalName() + " : " + population.getRoutes().get(0).getTotalDistance());
+			System.out.println(myAgent.getLocalName() + " : " + Main.routeInitialeAgentGenetique.getTotalDistance());
 			// population.getRoutes().get(0).printCitiesNameOfRoute();
 			System.out.println("------------------------------------------------------------------------------------");
 
@@ -128,7 +129,7 @@ public class GeneticConcurrence extends CyclicBehaviour {
 		case 3:
 			Main.routeInitialeAgentGenetique = new Route(
 					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
-			currentBestScore = Main.routeInitialeAgentGenetique.getTotalDistance();
+			double currentBestScore = Main.routeInitialeAgentGenetique.getTotalDistance();
 
 			// If the genetic Agent is the best
 			if (currentScore == currentBestScore) {

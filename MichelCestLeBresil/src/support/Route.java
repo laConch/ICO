@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import metaheuristiques.AlgoGenetique;
-
 /**
  * Class representing a route
  */
@@ -19,24 +17,20 @@ public class Route implements Serializable{
 
 	private ArrayList<City> cities = new ArrayList<City>();
 	
-	// Parameters for the genetic algorithm. Fitness is the parameter we try to
-	// optimize
+	// Fitness is the parameter we try to optimize in the genetic algorithm
 	private double fitness = 0;
-	private boolean isFitnessChanged = true;
 	
 	// Getters
 	public ArrayList<City> getCities() {
-		// If one gets the city it may change its fitness
-		isFitnessChanged = true;
 		return this.cities;
 	}
 
 	public double getFitness() {
-		if (isFitnessChanged) {
-			fitness = 1 / getTotalDistance() * 1000;
-			isFitnessChanged = false;
-		}
 		return this.fitness;
+	}
+	
+	public void setFitness() {
+		fitness = 1 / getTotalDistance() * 1000;
 	}
 
 	/**
@@ -63,15 +57,14 @@ public class Route implements Serializable{
 		// Mixed randomly
 		Collections.shuffle(this.cities);
 	}
-	
+
 	/**
-	 * Constructor with GeneticAlgorithm
+	 * Constructs an empty Route with the specified numberCities size
 	 * 
-	 * @param geneticAlgorithm
+	 * @param numberCities
 	 */
-	// TODO change lenght instead o=f geneticAlgortim as parameter
-	public Route(AlgoGenetique geneticAlgorithm) {
-		geneticAlgorithm.getInitialRoute().forEach(x -> this.cities.add(null));
+	public Route(int numberCities) {
+		this.cities = new ArrayList<City>(numberCities);
 	}
 	
 	/*
@@ -123,6 +116,7 @@ public class Route implements Serializable{
 	}
 	
 	// ToString
+	@Override
 	public String toString() {
 		return Arrays.toString(cities.toArray());
 	}

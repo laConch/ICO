@@ -12,7 +12,6 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import metaheuristiques.AlgoGenetique;
-import metaheuristiques.Population;
 import support.Main;
 import support.Route;
 
@@ -28,6 +27,17 @@ public class GeneticCollaborative extends CyclicBehaviour {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	// Parameters for the GeneticAlgorithm
+	private static int populationSize = 39;
+	private static int numberGeneration = 1054;
+	private static double mutationRate = 0.0157;
+	private static int tournamentSelectionSize = 22;
+	private static int numberEliteRoute = 0;
+	private static int numberCrossOverRoute = 24;
+	private static int numberRandomRoute = 0;
+	private static double crossOverCut = 0.8823;
+	private static int maxWithoutAmelioration = 165;
 
 	// Constructor
 	public GeneticCollaborative(Agent agent) {
@@ -40,9 +50,7 @@ public class GeneticCollaborative extends CyclicBehaviour {
 	private double bestScore = 0;
 	private int nbIterations = 0;
 	
-	Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
-	AlgoGenetique geneticAlgorithm = new AlgoGenetique(initialRoute.getCities());
-	Population population;
+	AlgoGenetique geneticAlgorithm;
 	
 	@Override
 	public void action() {
@@ -50,28 +58,15 @@ public class GeneticCollaborative extends CyclicBehaviour {
 		// Execution of the AlgoGenetique including the best solution of the
 		// previous cycle in the population
 		case 0:
-//			System.out.println(String.format("Gen 1 : %s", Main.routeInitialeAgentGenetique));
-			initialRoute = new Route(Main.routeInitialeAgentGenetique);
-			geneticAlgorithm.setNumberGeneration(initialRoute.getCities().size() * 100);
+			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
+			geneticAlgorithm = new AlgoGenetique(initialRoute.getCities(), populationSize, numberGeneration,
+					mutationRate, tournamentSelectionSize, numberEliteRoute, numberCrossOverRoute, numberRandomRoute,
+					crossOverCut, maxWithoutAmelioration);
 			
-			population = new Population(geneticAlgorithm, initialRoute.getCities(),
-					geneticAlgorithm.getPopulationSize() - 1);
-
-			// Add the best route of the previous cycle to the population
-			population.getRoutes().add(new Route(Main.routeInitialeAgentGenetique));
-			population.sortRoutesByFitness();
-
-//			System.out.println(String.format("Gen 2 : %s", population.getRoutes().get(0)));
-
-			for (int generation = 0; generation < geneticAlgorithm.getNumberGeneration(); generation++) {
-				population = geneticAlgorithm.evolve(population);
-				population.sortRoutesByFitness();
-			}
-			
-//			System.out.println(String.format("Gen 3 : %s", population.getRoutes().get(0)));
+			Main.routeInitialeAgentGenetique  = geneticAlgorithm.runForAgent(initialRoute);
 
 			// Select the best result
-			routes.add(population.getRoutes().get(0));
+			routes.add(Main.routeInitialeAgentGenetique);
 			step = 1;
 			break;
 
@@ -82,19 +77,19 @@ public class GeneticCollaborative extends CyclicBehaviour {
 			message.addReceiver(new AID("agentRS", AID.ISLOCALNAME));
 			message.addReceiver(new AID("agentTabou", AID.ISLOCALNAME));
 			try {
-				message.setContentObject((Serializable) population.getRoutes().get(0));
+				message.setContentObject((Serializable) Main.routeInitialeAgentGenetique);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			myAgent.send(message);
 			System.out.println(myAgent.getLocalName() + " sends road to agentRS and agentTabou");
 			step = 2;
-			
+
 			System.out.println("------------------------------------------------------------------------------------");
-			System.out.println(myAgent.getLocalName() + " : " + population.getRoutes().get(0).getTotalDistance());
-			//population.getRoutes().get(0).printCitiesNameOfRoute();
+			System.out.println(myAgent.getLocalName() + " : " + Main.routeInitialeAgentGenetique.getTotalDistance());
+			// population.getRoutes().get(0).printCitiesNameOfRoute();
 			System.out.println("------------------------------------------------------------------------------------");
-			
+
 			break;
 
 		// Receive other agents solutions
@@ -103,7 +98,8 @@ public class GeneticCollaborative extends CyclicBehaviour {
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				try {
-					System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					System.out.println(
+							myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
 					routes.add((Route) reply.getContentObject());
 				} catch (UnreadableException e) {
 					e.printStackTrace();
@@ -122,9 +118,8 @@ public class GeneticCollaborative extends CyclicBehaviour {
 
 		// Compare solutions, and keep the best one to start again the process
 		case 3:
-			double score = Main.routeInitialeAgentGenetique.getTotalDistance();
 			Main.routeInitialeAgentGenetique = new Route(Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
-			score = Main.routeInitialeAgentGenetique.getTotalDistance();
+			double score = Main.routeInitialeAgentGenetique.getTotalDistance();
 
 			// Stop condition
 			if (bestScore == 0 || score < bestScore) {

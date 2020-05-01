@@ -6,19 +6,22 @@ import java.io.Serializable;
  * Class representing a City
  * 
  */
-public class City implements Serializable{
+public class City implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// Constants
 	private static final double EARTH_EQUATORIAL_RADIUS = 6378.1370D;
 	private static final double CONVERT_DEGREES_TO_RADIANS = Math.PI / 180D;
-	private static final double CONVERT_KMS_TO_MILES = 0.621371;
 
 	// Attributes
 	private double longitude;
 	private double latitude;
 	private String name;
 
-	//Constructors
+	// Constructors
 	public City(String name, double latitude, double longitude) {
 		this.name = name;
 		this.latitude = latitude * CONVERT_DEGREES_TO_RADIANS;

@@ -26,12 +26,21 @@ import java.io.IOException;
 public class Main {
 	
 	/*
+	 * Paramètres pouvant être modifiés :
+	 * Si les booléens isCollaboration et isCollaborationAvancee sont faux alors c'est la concurrence
+	 * Le booléen isCollaboration est prioritaire sur le booléen isCollaborationAvancee
+	 */
+	public static final Boolean isCollaboration = true;
+	public static final Boolean isCollaborationAvancee = true;
+	public static final Boolean afficherCommunicationEntreAgents = false; // Afficher ou non les messages d'envoi et de réception entre les agents
+	public static int nbOfCities = 50;	// 2 < nbOfCities < 15494
+
+	/*
 	 * Parameters for the complex initialization
 	 */
 	// "WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
 	public static String countryOfCities = "WORLD";
-	// 2 < nbOfCities < 15494
-	public static int nbOfCities = 50;
+	
 	// 6 < nbOfCitiesMin < 15494
 	public static final int nbOfCitiesMin = 10;
 	// nbOfCitiesMax > nbOfCitiesMin
@@ -48,12 +57,7 @@ public class Main {
 	public static Route routeInitialeAgentRS;
 	public static Route routeInitialeAgentTabou;
 	public static Route routeInitialeAgentGenetique;
-	// Si les booléens isCollaboration et isCollaborationAvancee sont faux alors c'est la concurrence
-	// Le booléen isCollaboration est prioritaire sur le booléen isCollaborationAvancee
-	public static final Boolean isCollaboration = false;
-	public static final Boolean isCollaborationAvancee = true;
 	
-	public static final Boolean afficherCommunicationEntreAgents = false; // Afficher ou non les messages d'envoi et de réception entre les agents
 	
 	/*
 	 * Parameters to test the RS algorithm and the Tabou algorithm

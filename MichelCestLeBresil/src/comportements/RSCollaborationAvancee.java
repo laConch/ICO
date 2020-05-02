@@ -14,14 +14,14 @@ import jade.lang.acl.UnreadableException;
 import support.Main;
 import support.Route;
 
-public class RSConcurrence extends jade.core.behaviours.CyclicBehaviour {
+public class RSCollaborationAvancee extends jade.core.behaviours.CyclicBehaviour {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public RSConcurrence(Agent a) {
+	public RSCollaborationAvancee(Agent a) {
 		super(a);
 	}
 
@@ -52,7 +52,7 @@ public class RSConcurrence extends jade.core.behaviours.CyclicBehaviour {
 			System.out.println();
 			
 			startTime = System.nanoTime();
-			Route currentRoute = new Route(AgentRS.routeOptimaleAgentRS);
+			Route currentRoute = new Route(Main.routeInitialeAgentRS);
 			Route searchedRoute = new Route(currentRoute);
 			AgentRS.routeOptimaleAgentRS = new Route(currentRoute);
 			double coefficientRefroidissement = AgentRS.coefficientRefroidissementAgentRS;

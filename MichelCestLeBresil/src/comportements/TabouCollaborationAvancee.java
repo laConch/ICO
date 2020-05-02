@@ -14,14 +14,14 @@ import metaheuristiques.AlgoTabou;
 import support.Main;
 import support.Route;
 
-public class TabouCollaborativeAvancee extends jade.core.behaviours.CyclicBehaviour {
+public class TabouCollaborationAvancee extends jade.core.behaviours.CyclicBehaviour {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public TabouCollaborativeAvancee(Agent a) {
+	public TabouCollaborationAvancee(Agent a) {
 		super(a);
 	}
 
@@ -72,14 +72,12 @@ public class TabouCollaborativeAvancee extends jade.core.behaviours.CyclicBehavi
 				e.printStackTrace();
 			}
 			myAgent.send(mes);
-			System.out.println(myAgent.getLocalName() + " sends road to agentGenetique and AgentTabou");
+			if(Main.afficherCommunicationEntreAgents){
+				System.out.println(myAgent.getLocalName() + " sends road to agentGenetique and AgentTabou");
+			}
+			System.out.println(myAgent.getLocalName() + " : " + Math.round(AgentTabou.routeOptimaleAgentTabou.getTotalDistance()));
+			
 			step = 2;
-			
-			System.out.println("------------------------------------------------------------------------------------");
-			System.out.println(myAgent.getLocalName() + " : " + AgentTabou.routeOptimaleAgentTabou.getTotalDistance());
-			//AgentTabou.routeOptimaleAgentTabou.printCitiesNameOfRoute();
-			System.out.println("------------------------------------------------------------------------------------");
-			
 			break;
 
 		// Receive other agents solution
@@ -88,7 +86,9 @@ public class TabouCollaborativeAvancee extends jade.core.behaviours.CyclicBehavi
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				try {
-					System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					if(Main.afficherCommunicationEntreAgents){
+						System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					}
 					routes.add((Route) reply.getContentObject());
 				} catch (UnreadableException e) {
 					// TODO Auto-generated catch block

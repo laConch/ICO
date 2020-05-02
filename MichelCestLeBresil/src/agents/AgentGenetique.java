@@ -1,7 +1,7 @@
 package agents;
 
-import comportements.GeneticCollaborative;
-import comportements.GeneticCollaborativeAvancee;
+import comportements.GeneticCollaboration;
+import comportements.GeneticCollaborationAvancee;
 import comportements.GeneticConcurrence;
 import jade.core.Agent;
 import support.Main;
@@ -20,17 +20,17 @@ public class AgentGenetique extends Agent {
 	private static final long serialVersionUID = 1L;
 
 	protected void setup() {
-		System.out.println(this.getLocalName() + " is ready");
-		if(Main.isCollaboration) {addBehaviour(new GeneticCollaborative(this));}
+		if(Main.afficherCommunicationEntreAgents){System.out.println(this.getLocalName() + " is ready");}
+		if(Main.isCollaboration) {addBehaviour(new GeneticCollaboration(this));}
 		else {
 			if(Main.isCollaborationAvancee) {
-				addBehaviour(new GeneticCollaborativeAvancee(this));
+				addBehaviour(new GeneticCollaborationAvancee(this));
 			}
 			else {addBehaviour(new GeneticConcurrence(this));}
 		}
 	}
 
 	protected void takeDown() {
-		System.out.println(this.getLocalName() + " is terminated");
+		if(Main.afficherCommunicationEntreAgents){System.out.println(this.getLocalName() + " is terminated");}
 	}
 }

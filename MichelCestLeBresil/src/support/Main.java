@@ -31,24 +31,15 @@ public class Main {
 	// "WORLD" for the world, "FRA" for France, "DEU" for Germany, "GBR" for United Kingdom, "USA" for United States, "RUS" for Russia
 	public static String countryOfCities = "WORLD";
 	// 2 < nbOfCities < 15494
-	public static int nbOfCities = 100;
+	public static int nbOfCities = 50;
 	// 6 < nbOfCitiesMin < 15494
 	public static final int nbOfCitiesMin = 10;
 	// nbOfCitiesMax > nbOfCitiesMin
 	public static final int nbOfCitiesMax = 100;
 	// stepNbOfCities > 0
 	public static final int stepNbOfCities = 10;
-	public static final int nbOfTestsPerNbOfCities = 1;
+	public static final int nbOfTestsPerNbOfCities = 5;
 	public static int nbOfTestsRealised = 0;
-	
-	/*
-	 * Parameters to write in csv file
-	 */
-	public static final String csvColumnDelimeter = ",";
-	public static final String csvRowDelimeter = "\n";
-	public static String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
-			+ csvColumnDelimeter + "Duration (in ms)" + csvRowDelimeter;
-	public static String contentToWrite = "";
 	
 	/*
 	 * Parameters for the three agents
@@ -57,9 +48,12 @@ public class Main {
 	public static Route routeInitialeAgentRS;
 	public static Route routeInitialeAgentTabou;
 	public static Route routeInitialeAgentGenetique;
+	// Si les booléens isCollaboration et isCollaborationAvancee sont faux alors c'est la concurrence
+	// Le booléen isCollaboration est prioritaire sur le booléen isCollaborationAvancee
 	public static final Boolean isCollaboration = false;
 	public static final Boolean isCollaborationAvancee = true;
-	// Si les booléens isCollaboration et isCollaborationAvancee sont faux alors c'est la concurrence
+	
+	public static final Boolean afficherCommunicationEntreAgents = false; // Afficher ou non les messages d'envoi et de réception entre les agents
 	
 	/*
 	 * Parameters to test the RS algorithm and the Tabou algorithm
@@ -72,6 +66,15 @@ public class Main {
 	 */
 	public static int[] tabouListSizeList = new int[] {10};
 	public static int[] nbIterationTabouList = new int[] { 50 };
+	
+	/*
+	 * Parameters to write in csv file
+	 */
+	public static final String csvColumnDelimeter = ",";
+	public static final String csvRowDelimeter = "\n";
+	public static String header = "NbOfCities" + csvColumnDelimeter + "Optimal distance" + csvColumnDelimeter + "Sequencing"
+			+ csvColumnDelimeter + "Duration (in ms)" + csvRowDelimeter;
+	public static String contentToWrite = "";
 	
 	/**
 	 * 

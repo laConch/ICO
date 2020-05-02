@@ -90,14 +90,12 @@ public class GeneticConcurrence extends CyclicBehaviour {
 				e.printStackTrace();
 			}
 			myAgent.send(message);
-			System.out.println(myAgent.getLocalName() + " sends road to agentRS and agentTabou");
+			if(Main.afficherCommunicationEntreAgents){
+				System.out.println(myAgent.getLocalName() + " sends road to agentRS and agentTabou");
+			}
+			System.out.println(myAgent.getLocalName() + " : " + Math.round(bestRoute.getTotalDistance()));
+			
 			step = 2;
-
-			System.out.println("------------------------------------------------------------------------------------");
-			System.out.println(myAgent.getLocalName() + " : " + bestRoute.getTotalDistance());
-			// population.getRoutes().get(0).printCitiesNameOfRoute();
-			System.out.println("------------------------------------------------------------------------------------");
-
 			break;
 
 		// Receive other agents solutions
@@ -106,8 +104,9 @@ public class GeneticConcurrence extends CyclicBehaviour {
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				try {
-					System.out.println(
-							myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					if(Main.afficherCommunicationEntreAgents){
+						System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					}
 					routes.add((Route) reply.getContentObject());
 				} catch (UnreadableException e) {
 					e.printStackTrace();
@@ -136,18 +135,18 @@ public class GeneticConcurrence extends CyclicBehaviour {
 					// Change the parameters in order to improve the time to find a solution
 					if (numberGeneration - NUMBER_GENERATION_STEP >= NUMBER_GENERATION_MIN) {
 						numberGeneration -= NUMBER_GENERATION_STEP;
-						System.out.println(String.format("NumberGeneration : %s", numberGeneration));
+						//System.out.println(String.format("NumberGeneration : %s", numberGeneration));
 					} else {
 						// Change parameters to improve the score
 						numberGeneration += NUMBER_GENERATION_STEP;
-						System.out.println(String.format("NumberGeneration : %s", numberGeneration));
+						//System.out.println(String.format("NumberGeneration : %s", numberGeneration));
 					}
 				} else {
 					// If the genetic Agent is not the best
 					// Change the parameters to improve the score
 					// TODO : improve another parameter
 					numberGeneration += NUMBER_GENERATION_STEP;
-					System.out.println(String.format("NumberGeneration : %s", numberGeneration));
+					//System.out.println(String.format("NumberGeneration : %s", numberGeneration));
 				}
 			}
 

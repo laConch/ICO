@@ -14,30 +14,23 @@ import jade.lang.acl.UnreadableException;
 import support.Main;
 import support.Route;
 
-public class RSCollaborativeAvancee extends jade.core.behaviours.CyclicBehaviour {
+public class RSCollaboration extends jade.core.behaviours.CyclicBehaviour {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public RSCollaborativeAvancee(Agent a) {
+	public RSCollaboration(Agent a) {
 		super(a);
 	}
 
 	private int step = 0;
 	private int nbReplies = 0;
 	ArrayList<Route> routes = new ArrayList<Route>();
+	private double bestScore = 0;
 	private int nbIterations = 0;
-	public static long startTime;
-	public static long endTime;
-	private double currentTimeToFindSolution;
-	private double previousTimeToFindSolution = 0;
-	private double currentScore;
-	private double previousScore = 0;
-	private double currentBestScore;
-	private double previousBestScore = 0;
-	
+
 	@Override
 	public void action() {
 		// Initialization of the parameters of the algorithm
@@ -46,12 +39,16 @@ public class RSCollaborativeAvancee extends jade.core.behaviours.CyclicBehaviour
 		// Execution of the Recuit Simule algorithm with as a start the best solution
 		// found before
 		case 0:
-			startTime = System.nanoTime();
+			AgentRS.nbOfCommunicationCycle++;
+			System.out.println();
+			System.out.println("Cycle de communication n°"+AgentRS.nbOfCommunicationCycle+" - Programme lancé depuis " + (System.nanoTime()-AgentRS.startTime)/1000000 + " ms");
+			System.out.println();
+			
 			Route currentRoute = new Route(Main.routeInitialeAgentRS);
-			Route searchedRoute = new Route(currentRoute);
-			AgentRS.routeOptimaleAgentRS = new Route(currentRoute);
-			double coefficientRefroidissement = AgentRS.coefficientRefroidissementAgentRS;
-			int nbIterationMaxPerCycle = AgentRS.nbIterationMaxPerCycleAgentRS;
+			Route searchedRoute = new Route(Main.routeInitialeAgentRS);
+			AgentRS.routeOptimaleAgentRS = new Route(Main.routeInitialeAgentRS);
+			double coefficientRefroidissement = AgentRS.coefficientRefroidissementAgentRSForCollaboration;
+			int nbIterationMaxPerCycle = AgentRS.nbIterationMaxPerCycleAgentRSForCollaboration;
 
 			int routeSize = currentRoute.getCities().size();
 
@@ -89,10 +86,6 @@ public class RSCollaborativeAvancee extends jade.core.behaviours.CyclicBehaviour
 				}
 				temperature *= coefficientRefroidissement;
 			}
-			
-			endTime = System.nanoTime();
-			currentTimeToFindSolution = endTime - startTime;
-			currentScore = AgentRS.routeOptimaleAgentRS.getTotalDistance();
 			routes.add(AgentRS.routeOptimaleAgentRS);
 			step = 1;
 			break;
@@ -109,26 +102,25 @@ public class RSCollaborativeAvancee extends jade.core.behaviours.CyclicBehaviour
 				e.printStackTrace();
 			}
 			myAgent.send(mes);
-			System.out.println(myAgent.getLocalName() + " sends road to agentGenetique and agentTabou");
+			if(Main.afficherCommunicationEntreAgents){
+				System.out.println(myAgent.getLocalName() + " sends road to agentGenetique and agentTabou");
+			}
+			System.out.println(myAgent.getLocalName() + " : " + Math.round(AgentRS.routeOptimaleAgentRS.getTotalDistance()));
+			
 			step = 2;
-			
-			System.out.println("------------------------------------------------------------------------------------");
-			System.out.println(myAgent.getLocalName() + " : " + AgentRS.routeOptimaleAgentRS.getTotalDistance());
-			//AgentRS.routeOptimaleAgentRS.printCitiesNameOfRoute();
-			System.out.println("------------------------------------------------------------------------------------");
-			
 			break;
 
-		// Receive other agents solutions
+		// Receive other agents solution
 		case 2:
 
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				try {
-					System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					if(Main.afficherCommunicationEntreAgents){
+						System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					}
 					routes.add((Route) reply.getContentObject());					
 				} catch (UnreadableException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				nbReplies++;
@@ -146,34 +138,13 @@ public class RSCollaborativeAvancee extends jade.core.behaviours.CyclicBehaviour
 
 		// Compare solutions, and keep the best one to start again the process
 		case 3:
+			double score = Main.routeInitialeAgentRS.getTotalDistance();
 			Main.routeInitialeAgentRS = new Route(Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
-			currentBestScore = Main.routeInitialeAgentRS.getTotalDistance();
-			// Si l'agent RS est le plus performant
-			if(currentScore == currentBestScore) {
-				if(previousScore == 0 || currentScore < previousScore) {
-					// Change parameters to improve the time to find solution
-/**					if (AgentRS.nbIterationMaxPerCycleAgentRS - AgentRS.stepNbIterationMaxPerCycleAgentRS >= AgentRS.nbMinIterationMaxPerCycleAgentRS) {
-						AgentRS.nbIterationMaxPerCycleAgentRS -= AgentRS.stepNbIterationMaxPerCycleAgentRS;
-						//System.out.println(AgentRS.nbIterationMaxPerCycleAgentRS);
-					}
-*/				}
-				else {
-					// Change parameters to improve the score
-					AgentRS.nbIterationMaxPerCycleAgentRS += AgentRS.stepNbIterationMaxPerCycleAgentRS;
-					//System.out.println(AgentRS.nbIterationMaxPerCycleAgentRS);
-				}
-			}
-			// si l'agent RS n'est le plus performant
-			else {
-				// Change parameters to improve the score
-				AgentRS.coefficientRefroidissementAgentRS = (1-AgentRS.coefficientRefroidissementAgentRS)/AgentRS.stepCoefficientRefroidissementAgentRS+AgentRS.coefficientRefroidissementAgentRS;	
-				//System.out.println(AgentRS.coefficientRefroidissementAgentRS);
-				AgentRS.nbIterationMaxPerCycleAgentRS += AgentRS.stepNbIterationMaxPerCycleAgentRS;
-				//System.out.println(AgentRS.nbIterationMaxPerCycleAgentRS);
-			}
-			
+			score = Main.routeInitialeAgentRS.getTotalDistance();
+
 			// Stop condition
-			if (previousBestScore == 0 || currentBestScore < previousBestScore) {
+			if (bestScore == 0 || score < bestScore) {
+				bestScore = score;
 				nbIterations = 0;
 			} else {
 				nbIterations++;
@@ -181,11 +152,6 @@ public class RSCollaborativeAvancee extends jade.core.behaviours.CyclicBehaviour
 			if (nbIterations == Main.nbIterationsMaxSansAmelioration) {
 				myAgent.doDelete();
 			}
-			
-			// Save current variables as previous variables for next iteration
-			previousScore = currentScore;
-			previousBestScore = currentBestScore;
-			previousTimeToFindSolution = currentTimeToFindSolution;
 
 			step = 0;
 			break;

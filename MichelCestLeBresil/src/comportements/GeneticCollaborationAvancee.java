@@ -15,18 +15,18 @@ import support.Main;
 import support.Route;
 
 /**
- * Behavior for the {@link AgentGenetique} in a collaborative mode.
+ * Behaviour for the {@link AgentGenetique} in a advanced collaborative mode.
  * 
  * @author Sethian & Bouzereau
- * @since Apr 22, 2020
+ * @since May 1, 2020
  */
-public class GeneticCollaborative extends CyclicBehaviour {
+public class GeneticCollaborationAvancee extends CyclicBehaviour {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	// Parameters for the GeneticAlgorithm
 	private static int populationSize = 191;
 	private static int numberGeneration = 1709;
@@ -38,33 +38,39 @@ public class GeneticCollaborative extends CyclicBehaviour {
 	private static double crossOverCut = 0.1470;
 	private static int maxWithoutAmelioration = 1654;
 
+	// Parameters uses in the competition behavior to improve the time to find a
+	// solution
+	public static final int NUMBER_GENERATION_MIN = 500;
+	public static final int NUMBER_GENERATION_STEP = 500;
+
 	// Constructor
-	public GeneticCollaborative(Agent agent) {
+	public GeneticCollaborationAvancee(Agent agent) {
 		super(agent);
 	}
 
 	private int step = 0;
 	private int nbReplies = 0;
 	private ArrayList<Route> routes = new ArrayList<Route>();
-	private double bestScore = 0;
 	private int nbIterations = 0;
-	
+	private double currentScore;
+	private double previousScore = 0;
+	private double previousBestScore = 0;
+
 	private AlgoGenetique geneticAlgorithm;
 	private Route bestRoute;
-	
+
 	@Override
 	public void action() {
 		switch (step) {
-		// Execution of the AlgoGenetique including the best solution of the
-		// previous cycle in the population
+		// Execution of the AlgoGenetique from the best solution found before
 		case 0:
 			Route initialRoute = new Route(Main.routeInitialeAgentGenetique);
-			
 			geneticAlgorithm = new AlgoGenetique(initialRoute.getCities(), populationSize, numberGeneration,
 					mutationRate, tournamentSelectionSize, numberEliteRoute, numberCrossOverRoute, numberRandomRoute,
 					crossOverCut, maxWithoutAmelioration);
 			
 			bestRoute = geneticAlgorithm.runForAgent(initialRoute);
+			currentScore = bestRoute.getTotalDistance();
 
 			// Select the best result
 			routes.add(bestRoute);
@@ -83,14 +89,12 @@ public class GeneticCollaborative extends CyclicBehaviour {
 				e.printStackTrace();
 			}
 			myAgent.send(message);
-			System.out.println(myAgent.getLocalName() + " sends road to agentRS and agentTabou");
+			if(Main.afficherCommunicationEntreAgents){
+				System.out.println(myAgent.getLocalName() + " sends road to agentRS and agentTabou");	
+			}
+			System.out.println(myAgent.getLocalName() + " : " + Math.round(bestRoute.getTotalDistance()));
+			
 			step = 2;
-
-			System.out.println("------------------------------------------------------------------------------------");
-			System.out.println(myAgent.getLocalName() + " : " + bestRoute.getTotalDistance());
-			// population.getRoutes().get(0).printCitiesNameOfRoute();
-			System.out.println("------------------------------------------------------------------------------------");
-
 			break;
 
 		// Receive other agents solutions
@@ -99,17 +103,18 @@ public class GeneticCollaborative extends CyclicBehaviour {
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				try {
-					System.out.println(
-							myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					if(Main.afficherCommunicationEntreAgents){
+						System.out.println(myAgent.getLocalName() + " receives road from " + reply.getSender().getLocalName());
+					}
 					routes.add((Route) reply.getContentObject());
 				} catch (UnreadableException e) {
 					e.printStackTrace();
 				}
 				nbReplies++;
 
-			} else {
+			} else
 				block();
-			}
+
 			// if we received all the roads from the other agents
 			if (nbReplies == 2) {
 				nbReplies = 0;
@@ -120,24 +125,45 @@ public class GeneticCollaborative extends CyclicBehaviour {
 		// Compare solutions, and keep the best one to start again the process
 		case 3:
 			// Add the best of the three routes
-			Main.routeInitialeAgentGenetique = new Route(
-					Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
-			double score = Main.routeInitialeAgentGenetique.getTotalDistance();
+			Main.routeInitialeAgentGenetique = new Route(Collections.min(routes, Comparator.comparing(Route::getTotalDistance)));
+			double currentBestScore = Main.routeInitialeAgentGenetique.getTotalDistance();
+
+			// If the genetic Agent is the best
+			if (currentScore == currentBestScore) {
+				if (previousScore == 0 || currentScore < previousScore) {
+					// Change the parameters in order to improve the time to find a solution
+					if (numberGeneration - NUMBER_GENERATION_STEP >= NUMBER_GENERATION_MIN) {
+						numberGeneration -= NUMBER_GENERATION_STEP;
+						//System.out.println(String.format("NumberGeneration : %s", numberGeneration));
+					} else {
+						// Change parameters to improve the score
+						numberGeneration += NUMBER_GENERATION_STEP;
+						//System.out.println(String.format("NumberGeneration : %s", numberGeneration));
+					}
+				} else {
+					// If the genetic Agent is not the best
+					// Change the parameters to improve the score
+					numberGeneration += NUMBER_GENERATION_STEP;
+					//System.out.println(String.format("NumberGeneration : %s", numberGeneration));
+				}
+			}
 
 			// Stop condition
-			if (bestScore == 0 || score < bestScore) {
-				bestScore = score;
+			if (previousBestScore == 0 || currentBestScore < previousBestScore)
 				nbIterations = 0;
-			} else {
+			else
 				nbIterations++;
-			}
-			if (nbIterations == Main.nbIterationsMaxSansAmelioration) {
+
+			if (nbIterations == Main.nbIterationsMaxSansAmelioration)
 				myAgent.doDelete();
-			}
+
+			// Save current variables as previous variables for next iteration
+			previousScore = currentScore;
+			previousBestScore = currentBestScore;
 
 			step = 0;
 			break;
 		}
-
 	}
+
 }
